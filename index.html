@@ -3,171 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coursework Assignments</title>
+  <title>Web Programming – Coursework</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --text-color: #1e293b;
-      --primary-color: #2563eb;
-      --primary-hover: #1d4ed8;
-      --border-color: #e2e8f0;
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --ink: #14181f;
+      --muted: #5b6472;
+      --line: #d3d8e0;
+      --link: #1a47d6;
+      --link-text-on: #ffffff;
+      --visited: #6a3fb5;
+      --font: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #12151b;
+        --surface: #1b2029;
+        --ink: #eef1f6;
+        --muted: #9aa3b2;
+        --line: #333a47;
+        --link: #8aa8ff;
+        --link-text-on: #12151b;
+        --visited: #b79af0;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
       margin: 0;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: clamp(32px, 8vw, 88px) 24px 64px;
     }
 
     header {
-      text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: clamp(40px, 7vw, 72px);
     }
 
     h1 {
-      margin: 0 0 10px 0;
-      font-size: 2rem;
-      color: #0f172a;
+      margin: 0 0 12px;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
     }
 
-    p {
+    .intro {
       margin: 0;
-      color: #64748b;
+      max-width: 46ch;
+      color: var(--muted);
+      font-size: 1.0625rem;
     }
 
-    .container {
-      width: 100%;
-      max-width: 800px;
+    .intro .seen {
+      color: var(--visited);
+      font-weight: 600;
+    }
+
+    .weeks {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
+      gap: clamp(28px, 5vw, 44px);
     }
 
-    .folder-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    .week {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 12px 32px;
+      align-items: center;
     }
 
-    .folder-title {
+    .week-name {
+      margin: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-weight: 800;
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .week-name span {
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: var(--muted);
+    }
+
+    .tasks {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+      gap: 10px;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 56px;
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      color: var(--link);
       font-size: 1.25rem;
       font-weight: 600;
-      margin-top: 0;
-      margin-bottom: 15px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid var(--border-color);
-      color: #334155;
-    }
-
-    .task-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .task-list li {
-      margin-bottom: 10px;
-    }
-
-    .task-list li:last-child {
-      margin-bottom: 0;
-    }
-
-    .task-link {
-      display: block;
-      padding: 10px 14px;
-      background-color: #f1f5f9;
-      color: var(--primary-color);
       text-decoration: none;
-      border-radius: 6px;
-      font-weight: 500;
-      transition: all 0.2s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     }
 
-    .task-link:hover {
-      background-color: var(--primary-color);
-      color: #ffffff;
-      transform: translateY(-1px);
+    .task:visited {
+      color: var(--visited);
+      border-color: var(--visited);
+    }
+
+    .task:hover {
+      background: var(--link);
+      border-color: var(--link);
+      color: var(--link-text-on);
+    }
+
+    .task:visited:hover {
+      background: var(--visited);
+      border-color: var(--visited);
+      color: var(--link-text-on);
+    }
+
+    .task:focus-visible {
+      outline: 3px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 640px) {
+      .week { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .task { transition: none; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Web Programming</h1>
-    <p>Select a task below to view the HTML page.</p>
-  </header>
+  <div class="page">
+    <header>
+      <h1>Web Programming</h1>
+      <p class="intro">Pick a week, then a task number to open its page. Tasks you've already opened turn <span class="seen">purple</span>.</p>
+    </header>
 
-  <main class="container">
+    <main class="weeks">
 
-    <!-- Folder: week2_1 -->
-    <div class="folder-card">
-      <h2 class="folder-title">Week 2_1</h2>
-      <ul class="task-list">
-        <li><a class="task-link" href="Week2_1/task1.html">Task 1</a></li>
-        <li><a class="task-link" href="Week2_1/task2.html">Task 2</a></li>
-        <li><a class="task-link" href="Week2_1/task3.html">Task 3</a></li>
-        <li><a class="task-link" href="Week2_1/task4.html">Task 4</a></li>
-        <li><a class="task-link" href="Week2_1/task5.html">Task 5</a></li>
-        <li><a class="task-link" href="Week2_1/task6.html">Task 6</a></li>
-        <li><a class="task-link" href="Week2_1/task7.html">Task 7</a></li>
-        <li><a class="task-link" href="Week2_1/task8.html">Task 8</a></li>
-      </ul>
-    </div>
+      <!-- Folder: Week2_1 -->
+      <section class="week" aria-labelledby="w2-1">
+        <h2 class="week-name" id="w2-1"><span>Week</span>2.1</h2>
+        <ul class="tasks">
+          <li><a class="task" href="Week2_1/task1.html" aria-label="Week 2.1, task 1">1</a></li>
+          <li><a class="task" href="Week2_1/task2.html" aria-label="Week 2.1, task 2">2</a></li>
+          <li><a class="task" href="Week2_1/task3.html" aria-label="Week 2.1, task 3">3</a></li>
+          <li><a class="task" href="Week2_1/task4.html" aria-label="Week 2.1, task 4">4</a></li>
+          <li><a class="task" href="Week2_1/task5.html" aria-label="Week 2.1, task 5">5</a></li>
+          <li><a class="task" href="Week2_1/task6.html" aria-label="Week 2.1, task 6">6</a></li>
+          <li><a class="task" href="Week2_1/task7.html" aria-label="Week 2.1, task 7">7</a></li>
+          <li><a class="task" href="Week2_1/task8.html" aria-label="Week 2.1, task 8">8</a></li>
+        </ul>
+      </section>
 
-    <!-- Folder: week2_2 -->
-    <div class="folder-card">
-      <h2 class="folder-title">Week 2_2</h2>
-      <ul class="task-list">
-        <li><a class="task-link" href="week2_2/task1.html">Task 1</a></li>
-        <li><a class="task-link" href="week2_2/task2.html">Task 2</a></li>
-        <li><a class="task-link" href="week2_2/task3.html">Task 3</a></li>
-        <li><a class="task-link" href="week2_2/task4.html">Task 4</a></li>
-        <li><a class="task-link" href="week2_2/task5.html">Task 5</a></li>
-        <li><a class="task-link" href="week2_2/task6.html">Task 6</a></li>
-        <li><a class="task-link" href="week2_2/task7.html">Task 7</a></li>
-        <li><a class="task-link" href="week2_2/task8.html">Task 8</a></li>
-      </ul>
-    </div>
+      <!-- Folder: week2_2 -->
+      <section class="week" aria-labelledby="w2-2">
+        <h2 class="week-name" id="w2-2"><span>Week</span>2.2</h2>
+        <ul class="tasks">
+          <li><a class="task" href="week2_2/task1.html" aria-label="Week 2.2, task 1">1</a></li>
+          <li><a class="task" href="week2_2/task2.html" aria-label="Week 2.2, task 2">2</a></li>
+          <li><a class="task" href="week2_2/task3.html" aria-label="Week 2.2, task 3">3</a></li>
+          <li><a class="task" href="week2_2/task4.html" aria-label="Week 2.2, task 4">4</a></li>
+          <li><a class="task" href="week2_2/task5.html" aria-label="Week 2.2, task 5">5</a></li>
+          <li><a class="task" href="week2_2/task6.html" aria-label="Week 2.2, task 6">6</a></li>
+          <li><a class="task" href="week2_2/task7.html" aria-label="Week 2.2, task 7">7</a></li>
+          <li><a class="task" href="week2_2/task8.html" aria-label="Week 2.2, task 8">8</a></li>
+        </ul>
+      </section>
 
-    <!-- Folder: week3_1 -->
-    <div class="folder-card">
-      <h2 class="folder-title">Week 3_1</h2>
-      <ul class="task-list">
-        <li><a class="task-link" href="week3_1/task1.html">Task 1</a></li>
-        <li><a class="task-link" href="week3_1/task2.html">Task 2</a></li>
-        <li><a class="task-link" href="week3_1/task3.html">Task 3</a></li>
-        <li><a class="task-link" href="week3_1/task4.html">Task 4</a></li>
-        <li><a class="task-link" href="week3_1/task5.html">Task 5</a></li>
-        <li><a class="task-link" href="week3_1/task6.html">Task 6</a></li>
-        <li><a class="task-link" href="week3_1/task7.html">Task 7</a></li>
-        <li><a class="task-link" href="week3_1/task8.html">Task 8</a></li>
-      </ul>
-    </div>
+      <!-- Folder: week3_1 -->
+      <section class="week" aria-labelledby="w3-1">
+        <h2 class="week-name" id="w3-1"><span>Week</span>3.1</h2>
+        <ul class="tasks">
+          <li><a class="task" href="week3_1/task1.html" aria-label="Week 3.1, task 1">1</a></li>
+          <li><a class="task" href="week3_1/task2.html" aria-label="Week 3.1, task 2">2</a></li>
+          <li><a class="task" href="week3_1/task3.html" aria-label="Week 3.1, task 3">3</a></li>
+          <li><a class="task" href="week3_1/task4.html" aria-label="Week 3.1, task 4">4</a></li>
+          <li><a class="task" href="week3_1/task5.html" aria-label="Week 3.1, task 5">5</a></li>
+          <li><a class="task" href="week3_1/task6.html" aria-label="Week 3.1, task 6">6</a></li>
+          <li><a class="task" href="week3_1/task7.html" aria-label="Week 3.1, task 7">7</a></li>
+          <li><a class="task" href="week3_1/task8.html" aria-label="Week 3.1, task 8">8</a></li>
+        </ul>
+      </section>
 
-    <!-- Folder: week3_2 -->
-    <div class="folder-card">
-      <h2 class="folder-title">Week3_2</h2>
-      <ul class="task-list">
-        <li><a class="task-link" href="week3_2/task1.html">Task 1</a></li>
-        <li><a class="task-link" href="week3_2/task2.html">Task 2</a></li>
-        <li><a class="task-link" href="week3_2/task3.html">Task 3</a></li>
-        <li><a class="task-link" href="week3_2/task4.html">Task 4</a></li>
-        <li><a class="task-link" href="week3_2/task5.html">Task 5</a></li>
-        <li><a class="task-link" href="week3_2/task6.html">Task 6</a></li>
-        <li><a class="task-link" href="week3_2/task7.html">Task 7</a></li>
-      </ul>
-    </div>
+      <!-- Folder: week3_2 -->
+      <section class="week" aria-labelledby="w3-2">
+        <h2 class="week-name" id="w3-2"><span>Week</span>3.2</h2>
+        <ul class="tasks">
+          <li><a class="task" href="week3_2/task1.html" aria-label="Week 3.2, task 1">1</a></li>
+          <li><a class="task" href="week3_2/task2.html" aria-label="Week 3.2, task 2">2</a></li>
+          <li><a class="task" href="week3_2/task3.html" aria-label="Week 3.2, task 3">3</a></li>
+          <li><a class="task" href="week3_2/task4.html" aria-label="Week 3.2, task 4">4</a></li>
+          <li><a class="task" href="week3_2/task5.html" aria-label="Week 3.2, task 5">5</a></li>
+          <li><a class="task" href="week3_2/task6.html" aria-label="Week 3.2, task 6">6</a></li>
+          <li><a class="task" href="week3_2/task7.html" aria-label="Week 3.2, task 7">7</a></li>
+        </ul>
+      </section>
 
-  </main>
+    </main>
+  </div>
 
 </body>
 </html>
