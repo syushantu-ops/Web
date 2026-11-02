@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Checker</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #dbeafe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 420px;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 35px #00000015;
+        }
+
+        h1 {
+            color: #166534;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            color: #334155;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px #16a34a20;
+        }
+
+        .result {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .percentage {
+            font-size: 36px;
+            font-weight: bold;
+            color: #15803d;
+            margin: 10px 0;
+        }
+
+        .grade {
+            font-size: 22px;
+            font-weight: bold;
+            color: #166534;
+        }
+
+        .progress {
+            background: #dcfce7;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            background: #22c55e;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .message {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            background: #15803d;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #166534;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Grade Checker</h1>
+        <p class="subtitle">
+            Enter your marks to calculate your grade.
+        </p>
+
+        <label for="fullMarks">Full Marks</label>
+        <input
+            type="number"
+            id="fullMarks"
+            min="1"
+            step="any"
+            placeholder="Enter full marks"
+            oninput="checkGrade()"
+        >
+
+        <label for="achieved">Achieved Score</label>
+        <input
+            type="number"
+            id="achieved"
+            min="0"
+            step="any"
+            placeholder="Enter your achieved score"
+            oninput="checkGrade()"
+        >
+
+        <div class="result">
+            <p>Your Percentage</p>
+            <div class="percentage" id="percentage">—</div>
+
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <p class="message" id="message">
+                Enter your marks to see your result.
+            </p>
+
+            <h2>
+                Grade: <span class="grade" id="grade">—</span>
+            </h2>
+        </div>
+
+        <button onclick="resetChecker()">Reset</button>
+    </div>
+
+    <script>
+        function checkGrade() {
+            const fullMarks = document.getElementById("fullMarks");
+            const achieved = document.getElementById("achieved");
+
+            const percentage = document.getElementById("percentage");
+            const grade = document.getElementById("grade");
+            const progressBar = document.getElementById("progressBar");
+            const message = document.getElementById("message");
+
+            const full = Number(fullMarks.value);
+            const score = Number(achieved.value);
+
+            // Check if both fields are filled
+            if (
+                fullMarks.value === "" ||
+                achieved.value === ""
+            ) {
+                percentage.textContent = "—";
+                grade.textContent = "—";
+                progressBar.style.width = "0%";
+                message.textContent =
+                    "Enter your marks to see your result.";
+                return;
+            }
+
+            // Validate the marks
+            if (
+                !Number.isFinite(full) ||
+                !Number.isFinite(score) ||
+                full <= 0 ||
+                score < 0 ||
+                score > full
+            ) {
+                percentage.textContent = "—";
+                grade.textContent = "—";
+                progressBar.style.width = "0%";
+                message.textContent =
+                    "Enter valid marks. Achieved score cannot exceed full marks.";
+                return;
+            }
+
+            // Calculate percentage
+            const percent = (score / full) * 100;
+
+            percentage.textContent =
+                percent.toFixed(2) + "%";
+
+            progressBar.style.width = percent + "%";
+
+            // Calculate grade
+            let result;
+
+            if (percent >= 90) {
+                result = "A";
+            } else if (percent >= 80) {
+                result = "B";
+            } else if (percent >= 70) {
+                result = "C";
+            } else {
+                result = "F";
+            }
+
+            grade.textContent = result;
+
+            message.textContent =
+                "You achieved " + score + " out of " + full + " marks.";
+        }
+
+        function resetChecker() {
+            document.getElementById("fullMarks").value = "";
+            document.getElementById("achieved").value = "";
+            checkGrade();
+        }
+    </script>
+
+</body>
+</html>
