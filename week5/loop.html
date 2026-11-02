@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Loops Playground</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2ff;
+            padding: 30px 15px;
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e40af;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 22px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 6px 18px #1e293b0d;
+        }
+
+        h2 {
+            color: #334155;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px 12px;
+            margin-bottom: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px #6366f120;
+        }
+
+        button {
+            padding: 10px 16px;
+            margin: 4px 4px 4px 0;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #3730a3;
+        }
+
+        .animal-button {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .animal-button:hover {
+            background: #c7d2fe;
+        }
+
+        .animal-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 15px 0;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #a7f3d0;
+            padding: 16px;
+            border-radius: 10px;
+            min-height: 50px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .hint {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>JavaScript Loops Playground</h1>
+
+    <div class="card">
+        <h2>1. Repeat Steps</h2>
+
+        <p class="hint">
+            Use a for loop to repeat a step multiple times.
+        </p>
+
+        <label for="count">Number of repetitions</label>
+
+        <input type="number" id="count"
+               min="1" max="20" value="5">
+
+        <button onclick="runSteps()">Run Loop</button>
+
+        <pre id="stepOutput"></pre>
+    </div>
+
+    <div class="card">
+        <h2>2. Loop Through Animals</h2>
+
+        <p class="hint">
+            Add animals to your list, remove them, and display them using a loop.
+        </p>
+
+        <label for="animalInput">Animal name</label>
+
+        <input type="text" id="animalInput"
+               placeholder="Enter an animal name">
+
+        <button onclick="addAnimal()">Add Animal</button>
+        <button onclick="runAnimals()">Run Loop</button>
+
+        <h3>Animal List</h3>
+
+        <div id="animalList" class="animal-list"></div>
+
+        <pre id="animalOutput"></pre>
+    </div>
+
+</div>
+
+<script>
+    function runSteps() {
+        let count = Number(
+            document.getElementById("count").value
+        );
+
+        if (
+            document.getElementById("count").value === "" ||
+            count < 1 ||
+            count > 20 ||
+            !Number.isInteger(count)
+        ) {
+            document.getElementById("stepOutput").textContent =
+                "Enter a whole number from 1 to 20.";
+            return;
+        }
+
+        let output = "";
+
+        for (let i = 1; i <= count; i++) {
+            output += "Step " + i + "\n";
+        }
+
+        document.getElementById("stepOutput").textContent =
+            output;
+    }
+
+    let animals = ["Dog", "Cat", "Elephant"];
+
+    function showAnimals() {
+        let list = document.getElementById("animalList");
+        list.innerHTML = "";
+
+        animals.forEach(function(animal, index) {
+            let button = document.createElement("button");
+
+            button.textContent = "Remove " + animal;
+            button.className = "animal-button";
+
+            button.onclick = function() {
+                animals.splice(index, 1);
+                showAnimals();
+                runAnimals();
+            };
+
+            list.appendChild(button);
+        });
+    }
+
+    function addAnimal() {
+        let input = document.getElementById("animalInput");
+        let animal = input.value.trim();
+
+        if (animal !== "") {
+            animals.push(animal);
+            input.value = "";
+
+            showAnimals();
+            runAnimals();
+        }
+    }
+
+    // Display animals using a for...of loop
+    function runAnimals() {
+        let output = "";
+
+        for (let animal of animals) {
+            output += animal + "\n";
+        }
+
+        document.getElementById("animalOutput").textContent =
+            output || "No animals in the list.";
+    }
+
+    runSteps();
+    showAnimals();
+    runAnimals();
+</script>
+
+</body>
+</html>
