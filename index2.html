@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gaze</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#101828;--mut:#667085;--bg:#eef1f6;--card:#fff;--ac:#3b3bf0;--line:#e1e5ee}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+body{font:15px/1.45 'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);height:100dvh}
+#app{height:100%;display:flex;flex-direction:column;max-width:640px;margin:auto;background:var(--bg);position:relative}
+header{display:flex;align-items:center;gap:.75rem;padding:.7rem 1rem;background:var(--card);border-bottom:1px solid var(--line)}
+header h1{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;color:var(--ac);flex:1}
+header span{color:var(--mut)}
+main{flex:1;overflow-y:auto;padding:.75rem}
+nav{display:flex;background:var(--card);border-top:1px solid var(--line)}
+nav button{flex:1;padding:.85rem;border:0;background:none;font:inherit;font-weight:600;color:var(--mut);cursor:pointer}
+nav button.on{color:var(--ac);box-shadow:inset 0 -3px var(--ac)}
+.card{background:var(--card);border-radius:14px;padding:.9rem;margin-bottom:.7rem;border:1px solid var(--line)}
+.card small{color:var(--mut);margin-left:.5rem}
+.card p{margin:.4rem 0 .6rem;white-space:pre-wrap;word-break:break-word}
+.row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+h2{font-size:1rem;margin:.6rem 0}
+em{color:var(--mut);font-style:normal}
+textarea,input{width:100%;font:inherit;border:1px solid var(--line);border-radius:10px;padding:.65rem;background:#fff}
+textarea{resize:none;height:70px;margin-bottom:.5rem}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.btn{border:0;border-radius:10px;background:var(--ac);color:#fff;font:inherit;font-weight:600;padding:.6rem 1rem;cursor:pointer}
+.btn.s{padding:.35rem .8rem}.btn.g{background:#e8eaf0;color:var(--ink)}
+.lk{border:0;background:#f1f3f8;border-radius:20px;padding:.3rem .8rem;font:inherit;cursor:pointer}
+.lk.on{background:var(--ac);color:#fff}
+.cm{margin:.4rem 0;padding:.4rem .6rem;background:#f6f7fb;border-radius:10px}
+.ci{margin-top:.5rem}
+.empty{text-align:center;color:var(--mut);padding:2rem 1rem}
+#auth{height:100%;display:grid;place-items:center;padding:1rem}
+#auth .box{width:100%;max-width:380px;background:var(--card);padding:1.6rem;border-radius:16px;border:1px solid var(--line);display:grid;gap:.6rem}
+#auth h1{font-size:2.4rem;font-weight:800;letter-spacing:-.04em;color:var(--ac)}
+#auth p{color:var(--mut);margin-bottom:.4rem}
+#sw{background:none;border:0;color:var(--ac);font:inherit;cursor:pointer;margin-top:.3rem}
+#chat{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:5}
+#msgs{flex:1;overflow-y:auto;padding:.75rem;display:flex;flex-direction:column;gap:.4rem}
+.msg{max-width:75%;padding:.5rem .85rem;border-radius:18px;background:#fff;border:1px solid var(--line);align-self:flex-start;word-break:break-word}
+.msg.me{align-self:flex-end;background:var(--ac);color:#fff;border-color:var(--ac)}
+.bar{display:flex;gap:.5rem;padding:.7rem;background:var(--card);border-top:1px solid var(--line)}
+.bar button.back{background:none;border:0;font-size:1.4rem;cursor:pointer}
+#toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.6rem 1rem;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;z-index:20}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<section id="auth">
+  <div class="box">
+    <h1>Gaze</h1><p>Posts, friends and chat in one place.</p>
+    <input id="nm" placeholder="Your name" hidden>
+    <input id="em" type="email" placeholder="Email" autocomplete="email">
+    <input id="pw" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+    <button class="btn" id="go">Log in</button>
+    <button id="sw">New here? Create account</button>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <header><h1>Gaze</h1><span id="who"></span><button class="btn s g" id="out">Log out</button></header>
+  <main id="main"></main>
+  <nav>
+    <button data-t="feed" class="on">Feed</button>
+    <button data-t="people">People</button>
+    <button data-t="chats">Chats</button>
+  </nav>
+  <section id="chat" hidden>
+    <div class="bar"><button class="back" id="bk" aria-label="Back">&larr;</button><b id="ct"></b></div>
+    <div id="msgs"></div>
+    <div class="bar"><input id="mi" placeholder="Write a message"><button class="btn" id="sd">Send</button></div>
+  </section>
+</div>
+<div id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// STEP 1: paste your own values from Supabase > Project Settings > API
+const SUPABASE_URL = 'PASTE_YOUR_PROJECT_URL';
+const SUPABASE_KEY = 'PASTE_YOUR_ANON_PUBLIC_KEY';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const when = t => new Date(t).toLocaleString([], {dateStyle:'medium', timeStyle:'short'});
+let me = null, peer = null, chan = null, signup = false;
+
+function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2800); }
+function ok(r){ if (r.error){ toast(r.error.message); throw r.error; } return r.data; }
+
+/* ---------- Auth ---------- */
+function mode(){
+  $('#nm').hidden = !signup;
+  $('#go').textContent = signup ? 'Create account' : 'Log in';
+  $('#sw').textContent = signup ? 'Have an account? Log in' : 'New here? Create account';
+}
+$('#sw').onclick = () => { signup = !signup; mode(); };
+$('#go').onclick = async () => {
+  const email = $('#em').value.trim(), password = $('#pw').value, name = $('#nm').value.trim();
+  if (!email || !password || (signup && !name)) return toast('Fill in every field.');
+  const r = signup
+    ? await sb.auth.signUp({email, password, options:{data:{name}}})
+    : await sb.auth.signInWithPassword({email, password});
+  if (r.error) return toast(r.error.message);
+  if (signup && !r.data.session) toast('Check your email to confirm, then log in.');
+};
+$('#out').onclick = () => sb.auth.signOut();
+sb.auth.onAuthStateChange((_e, s) => setTimeout(() => boot(s?.user || null), 0));
+
+async function boot(u){
+  if (u && me && me.id === u.id) return;
+  if (chan){ sb.removeChannel(chan); chan = null; }
+  me = u; peer = null;
+  $('#auth').hidden = !!u; $('#app').hidden = !u; $('#chat').hidden = true;
+  if (!u) return;
+  const p = ok(await sb.from('profiles').select('name').eq('id', u.id).single());
+  me.name = p.name; $('#who').textContent = p.name;
+  chan = sb.channel('inbox').on('postgres_changes',
+    {event:'INSERT', schema:'public', table:'messages', filter:`receiver_id=eq.${u.id}`},
+    p => { if (peer && p.new.sender_id === peer.id) addMsg(p.new); else toast('New message'); }
+  ).subscribe();
+  show('feed');
+}
+
+/* ---------- Navigation ---------- */
+function show(t){
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  ({feed, people, chats})[t]();
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => show(b.dataset.t));
+
+/* ---------- Feed ---------- */
+const postHtml = p => {
+  const m = p.likes.some(l => l.user_id === me.id);
+  return `<article class="card" data-id="${p.id}">
+    <b>${esc(p.profiles.name)}</b><small>${when(p.created_at)}</small>
+    <p>${esc(p.body)}</p>
+    <button class="lk ${m ? 'on' : ''}" data-a="like" data-m="${m}">${m ? 'Liked' : 'Like'} (${p.likes.length})</button>
+    ${p.comments.map(c => `<div class="cm"><b>${esc(c.profiles.name)}</b> ${esc(c.body)}</div>`).join('')}
+    <input class="ci" data-a="comment" placeholder="Write a comment and press Enter">
+  </article>`;
+};
+async function feed(){
+  const d = ok(await sb.from('posts')
+    .select('id,body,created_at,profiles(name),likes(user_id),comments(id,body,profiles(name))')
+    .order('created_at', {ascending:false}).limit(50));
+  $('#main').innerHTML =
+    `<div class="card"><textarea id="pb" maxlength="1000" placeholder="What's on your mind, ${esc(me.name)}?"></textarea><button class="btn" id="pp">Post</button></div>`
+    + (d.length ? d.map(postHtml).join('') : '<p class="empty">No posts yet. Write the first one above.</p>');
+}
+
+/* ---------- People & friend requests ---------- */
+async function people(){
+  const ps = ok(await sb.from('profiles').select('id,name').neq('id', me.id).order('name'));
+  const fs = ok(await sb.from('friendships').select('*'));
+  const rel = {};
+  fs.forEach(f => rel[f.requester_id === me.id ? f.addressee_id : f.requester_id] = f);
+  const nameOf = id => ps.find(p => p.id === id)?.name || 'Someone';
+  const inc = fs.filter(f => f.status === 'pending' && f.addressee_id === me.id);
+  $('#main').innerHTML =
+    (inc.length ? '<h2>Friend requests</h2>' + inc.map(f => `<div class="card row"><b>${esc(nameOf(f.requester_id))}</b>
+      <span><button class="btn s" data-f="accept" data-fid="${f.id}">Accept</button>
+      <button class="btn s g" data-f="del" data-fid="${f.id}">Decline</button></span></div>`).join('') : '')
+    + '<h2>People</h2>'
+    + (ps.length ? ps.map(p => {
+        const f = rel[p.id];
+        const act = !f ? `<button class="btn s" data-f="add" data-uid="${p.id}">Add friend</button>`
+          : f.status === 'accepted' ? '<em>Friends</em>'
+          : f.requester_id === me.id ? '<em>Request sent</em>' : '<em>Wants to connect</em>';
+        return `<div class="card row"><b>${esc(p.name)}</b>${act}</div>`;
+      }).join('') : '<p class="empty">No one else has joined yet. Share the link with a friend.</p>');
+}
+
+/* ---------- Chats ---------- */
+async function chats(){
+  const fs = ok(await sb.from('friendships').select('requester_id,addressee_id').eq('status', 'accepted'));
+  const ids = fs.map(f => f.requester_id === me.id ? f.addressee_id : f.requester_id);
+  const ps = ids.length ? ok(await sb.from('profiles').select('id,name').in('id', ids)) : [];
+  $('#main').innerHTML = ps.length
+    ? ps.map(p => `<div class="card row" data-chat="${p.id}" data-name="${esc(p.name)}" style="cursor:pointer"><b>${esc(p.name)}</b><em>Open chat</em></div>`).join('')
+    : '<p class="empty">No chats yet. Add a friend in People. Once they accept, they appear here.</p>';
+}
+async function openChat(id, name){
+  peer = {id, name}; $('#ct').textContent = name; $('#msgs').innerHTML = ''; $('#chat').hidden = false;
+  const d = ok(await sb.from('messages').select('*')
+    .or(`and(sender_id.eq.${me.id},receiver_id.eq.${id}),and(sender_id.eq.${id},receiver_id.eq.${me.id})`)
+    .order('created_at').limit(200));
+  d.forEach(addMsg);
+}
+function addMsg(m){
+  const el = document.createElement('div');
+  el.className = 'msg' + (m.sender_id === me.id ? ' me' : '');
+  el.textContent = m.body;
+  $('#msgs').append(el); $('#msgs').scrollTop = 1e9;
+}
+async function send(){
+  const i = $('#mi'), body = i.value.trim();
+  if (!body || !peer) return;
+  i.value = '';
+  addMsg(ok(await sb.from('messages').insert({sender_id: me.id, receiver_id: peer.id, body}).select().single()));
+}
+$('#sd').onclick = send;
+$('#mi').onkeydown = e => { if (e.key === 'Enter') send(); };
+$('#bk').onclick = () => { $('#chat').hidden = true; peer = null; };
+
+/* ---------- Click handling for the main area ---------- */
+$('#main').addEventListener('click', async e => {
+  const t = e.target, id = t.closest('[data-id]')?.dataset.id;
+  if (t.id === 'pp'){
+    const body = $('#pb').value.trim(); if (!body) return;
+    ok(await sb.from('posts').insert({user_id: me.id, body})); return feed();
+  }
+  if (t.dataset.a === 'like'){
+    if (t.dataset.m === 'true') ok(await sb.from('likes').delete().eq('post_id', id).eq('user_id', me.id));
+    else ok(await sb.from('likes').insert({post_id: id, user_id: me.id}));
+    return feed();
+  }
+  if (t.dataset.f){
+    const f = t.dataset.f;
+    if (f === 'add') ok(await sb.from('friendships').insert({requester_id: me.id, addressee_id: t.dataset.uid}));
+    if (f === 'accept') ok(await sb.from('friendships').update({status:'accepted'}).eq('id', t.dataset.fid));
+    if (f === 'del') ok(await sb.from('friendships').delete().eq('id', t.dataset.fid));
+    return people();
+  }
+  const c = t.closest('[data-chat]');
+  if (c) openChat(c.dataset.chat, c.dataset.name);
+});
+$('#main').addEventListener('keydown', async e => {
+  const v = e.target.value?.trim();
+  if (e.key === 'Enter' && e.target.dataset.a === 'comment' && v){
+    ok(await sb.from('comments').insert({post_id: e.target.closest('[data-id]').dataset.id, user_id: me.id, body: v}));
+    feed();
+  }
+});
+mode();
+</script>
+</body>
+  </html>
+  
