@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog Explorer</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0fdf4;
+            color: #14532d;
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #15803d;
+            font-size: 32px;
+        }
+
+        header p {
+            color: #64748b;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        input, select, button {
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input, select {
+            border: 1px solid #bbf7d0;
+            outline: none;
+        }
+
+        input {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        button {
+            background: #16a34a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #15803d;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            color: #64748b;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        #posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        article {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border: 1px solid #dcfce7;
+            box-shadow: 0 3px 10px #00000008;
+            transition: 0.3s;
+        }
+
+        article:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px #00000012;
+        }
+
+        article h2 {
+            font-size: 18px;
+            color: #15803d;
+            text-transform: capitalize;
+            margin: 12px 0;
+        }
+
+        article p {
+            color: #475569;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        article small {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #64748b;
+            padding: 30px;
+        }
+
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 25px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            input, select, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main>
+
+    <header>
+        <h1>📚 My Blog Explorer</h1>
+        <p>Discover and search interesting blog posts.</p>
+    </header>
+
+    <div class="controls">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by title or content..."
+        >
+
+        <select id="postLimit">
+            <option value="10">10 Posts</option>
+            <option value="20">20 Posts</option>
+            <option value="50">50 Posts</option>
+            <option value="100">All Posts</option>
+        </select>
+
+        <button id="fetchBtn">Get Posts</button>
+
+    </div>
+
+    <p id="status">Preparing blog posts...</p>
+
+    <section id="posts"></section>
+
+</main>
+
+
+<script>
+
+    // API URL
+    const API_URL = "https://jsonplaceholder.typicode.com/posts";
+
+    // Selecting elements
+    const postContainer = document.getElementById("posts");
+    const statusMessage = document.getElementById("status");
+    const fetchBtn = document.getElementById("fetchBtn");
+    const searchInput = document.getElementById("searchInput");
+    const postLimit = document.getElementById("postLimit");
+
+    // Store all fetched posts
+    let postsData = [];
+
+
+    // Function to fetch posts from API
+    async function fetchPosts() {
+
+        fetchBtn.disabled = true;
+        statusMessage.textContent = "Fetching blog posts...";
+        postContainer.replaceChildren();
+
+        try {
+
+            const result = await fetch(API_URL);
+
+            if (!result.ok) {
+                throw new Error("Failed to retrieve posts");
+            }
+
+            postsData = await result.json();
+
+            showPosts();
+
+        } catch (error) {
+
+            console.error(error);
+
+            statusMessage.textContent =
+                "Something went wrong! Please check your internet connection.";
+
+        } finally {
+
+            fetchBtn.disabled = false;
+
+        }
+    }
+
+
+    // Function to display posts
+    function showPosts() {
+
+        const keyword = searchInput.value.toLowerCase().trim();
+
+        const maximum = Number(postLimit.value);
+
+        // Filter posts according to search input
+        const filteredPosts = postsData.filter(post => {
+
+            const content = post.title + " " + post.body;
+
+            return content.toLowerCase().includes(keyword);
+
+        });
+
+        // Apply selected post limit
+        const displayedPosts = filteredPosts.slice(0, maximum);
+
+        postContainer.replaceChildren();
+
+        statusMessage.textContent =
+            `Displaying ${displayedPosts.length} of ${postsData.length} posts.`;
+
+        if (displayedPosts.length === 0) {
+
+            statusMessage.textContent = "No posts matched your search.";
+
+            const message = document.createElement("p");
+            message.className = "empty";
+            message.textContent = "Try searching with another keyword.";
+
+            postContainer.appendChild(message);
+
+            return;
+        }
+
+
+        // Create a card for every post
+        displayedPosts.forEach(post => {
+
+            const card = document.createElement("article");
+
+            const postInfo = document.createElement("small");
+            postInfo.textContent =
+                `POST ID: ${post.id} | AUTHOR: ${post.userId}`;
+
+            const title = document.createElement("h2");
+            title.textContent = post.title;
+
+            const description = document.createElement("p");
+            description.textContent = post.body;
+
+            card.append(postInfo, title, description);
+
+            postContainer.appendChild(card);
+
+        });
+
+    }
+
+
+    // Button click event
+    fetchBtn.addEventListener("click", fetchPosts);
+
+    // Search posts while typing
+    searchInput.addEventListener("input", showPosts);
+
+    // Change number of displayed posts
+    postLimit.addEventListener("change", showPosts);
+
+
+    // Automatically load posts when page opens
+    fetchPosts();
+
+</script>
+
+</body>
+</html>
+
