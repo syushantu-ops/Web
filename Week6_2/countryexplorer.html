@@ -1,0 +1,438 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Country Explorer</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff7ed;
+            color: #431407;
+            margin: 0;
+            padding: 30px 20px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            color: #ea580c;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #78716c;
+            font-size: 16px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        input, select, button {
+            padding: 13px 15px;
+            font-size: 15px;
+            border-radius: 8px;
+        }
+
+        input, select {
+            border: 1px solid #fed7aa;
+            background: #ffffff;
+            outline: none;
+        }
+
+        input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        input:focus, select:focus {
+            border-color: #f97316;
+        }
+
+        button {
+            background: #ea580c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #c2410c;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #message {
+            color: #78716c;
+            margin: 20px 0;
+            min-height: 24px;
+        }
+
+        .error {
+            color: #dc2626 !important;
+        }
+
+        #countryList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .country-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #fed7aa;
+            box-shadow: 0 3px 12px #0000000a;
+            transition: 0.3s;
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px #00000015;
+        }
+
+        .country-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+            background: #ffedd5;
+            padding: 15px;
+            display: block;
+        }
+
+        .country-info {
+            padding: 18px;
+        }
+
+        .country-info h2 {
+            color: #ea580c;
+            margin-top: 0;
+            font-size: 21px;
+        }
+
+        .country-info p {
+            color: #57534e;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 9px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #a8a29e;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            input, select, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main>
+
+    <header>
+        <h1>🌎 World Explorer</h1>
+        <p>Discover countries, their flags, capitals and other information.</p>
+    </header>
+
+    <div class="controls">
+
+        <input
+            type="search"
+            id="countrySearch"
+            placeholder="Enter country name..."
+            aria-label="Search countries"
+        >
+
+        <select id="regionFilter">
+            <option value="">Every Region</option>
+            <option value="Africa">Africa</option>
+            <option value="Americas">Americas</option>
+            <option value="Asia">Asia</option>
+            <option value="Europe">Europe</option>
+            <option value="Oceania">Oceania</option>
+        </select>
+
+        <button id="fetchCountries">Explore Countries</button>
+
+    </div>
+
+    <p id="message" role="status" aria-live="polite">
+        Getting country information...
+    </p>
+
+    <section id="countryList"></section>
+
+    <footer>
+        World Explorer | Country information powered by countries.dev
+    </footer>
+
+</main>
+
+
+<script>
+
+    // API address
+    const COUNTRY_API =
+        "https://countries.dev/countries?fields=name,capital,region,flags,population,currencies,flag";
+
+    // HTML elements
+    const countryList = document.getElementById("countryList");
+    const message = document.getElementById("message");
+    const fetchButton = document.getElementById("fetchCountries");
+    const countrySearch = document.getElementById("countrySearch");
+    const regionFilter = document.getElementById("regionFilter");
+
+    // Store country information
+    let countryData = [];
+
+
+    // Fetch country information
+    async function getCountries() {
+
+        fetchButton.disabled = true;
+        message.className = "";
+        message.textContent = "Loading country information...";
+
+        countryList.replaceChildren();
+
+        try {
+
+            const response = await fetch(COUNTRY_API);
+
+            if (!response.ok) {
+                throw new Error("Unable to connect to the country API.");
+            }
+
+            const result = await response.json();
+
+            const records = Array.isArray(result)
+                ? result
+                : result.countries || result.data || [];
+
+            if (!Array.isArray(records) || records.length === 0) {
+                throw new Error("No country information available.");
+            }
+
+            // Organize the received information
+            countryData = records.map(item => ({
+
+                name: item.name?.common ||
+                      item.name ||
+                      item.commonName ||
+                      "Unknown",
+
+                capital: Array.isArray(item.capital)
+                    ? item.capital
+                    : item.capital
+                        ? [item.capital]
+                        : [],
+
+                region: item.region || item.continent || "",
+
+                flag: item.flags?.png ||
+                      item.flags?.svg ||
+                      item.flag?.png ||
+                      item.flag ||
+                      "",
+
+                population: Number(item.population || 0),
+
+                currencies: item.currencies || {}
+
+            }));
+
+            displayCountries();
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.className = "error";
+            message.textContent =
+                "Error loading countries. " + error.message;
+
+        } finally {
+
+            fetchButton.disabled = false;
+
+        }
+    }
+
+
+    // Display countries on the webpage
+    function displayCountries() {
+
+        const searchValue =
+            countrySearch.value.toLowerCase().trim();
+
+        const selectedRegion = regionFilter.value;
+
+        // Search and filter countries
+        const matchingCountries = countryData
+            .filter(country => {
+
+                return country.name.toLowerCase().includes(searchValue) &&
+                    (!selectedRegion || country.region === selectedRegion);
+
+            })
+            .sort((a, b) => a.name.localeCompare(b.name));
+
+
+        countryList.replaceChildren();
+
+        message.className = "";
+
+        message.textContent =
+            `Showing ${matchingCountries.length} of ${countryData.length} countries.`;
+
+
+        if (matchingCountries.length === 0) {
+
+            message.textContent = "No countries found! Try another search.";
+
+            return;
+        }
+
+
+        // Create country cards
+        const fragment = document.createDocumentFragment();
+
+        matchingCountries.forEach(country => {
+
+            const card = document.createElement("article");
+            card.className = "country-card";
+
+            const flagImage = document.createElement("img");
+
+            flagImage.src = country.flag;
+            flagImage.alt = "Flag of " + country.name;
+            flagImage.loading = "lazy";
+
+            const information = document.createElement("div");
+            information.className = "country-info";
+
+            const heading = document.createElement("h2");
+            heading.textContent = country.name;
+
+            const capitalText = document.createElement("p");
+            capitalText.textContent =
+                "Capital: " + (country.capital.join(", ") || "N/A");
+
+            const populationText = document.createElement("p");
+            populationText.textContent =
+                "Population: " + country.population.toLocaleString();
+
+            const regionText = document.createElement("p");
+            regionText.textContent =
+                "Region: " + (country.region || "N/A");
+
+
+            // Get currency information
+            const currencyNames = Object.values(country.currencies)
+                .map(currency => {
+
+                    if (typeof currency === "string") {
+                        return currency;
+                    }
+
+                    if (!currency) {
+                        return "";
+                    }
+
+                    return currency.name
+                        ? currency.name +
+                          (currency.symbol ? " (" + currency.symbol + ")" : "")
+                        : currency.code || "";
+
+                })
+                .filter(Boolean);
+
+            const currencyText = document.createElement("p");
+
+            currencyText.textContent =
+                "Currency: " + (currencyNames.join(", ") || "N/A");
+
+
+            information.append(
+                heading,
+                capitalText,
+                populationText,
+                regionText,
+                currencyText
+            );
+
+            card.append(flagImage, information);
+
+            fragment.appendChild(card);
+
+        });
+
+        countryList.appendChild(fragment);
+
+    }
+
+
+    // Event listeners
+    fetchButton.addEventListener("click", getCountries);
+
+    countrySearch.addEventListener("input", displayCountries);
+
+    regionFilter.addEventListener("change", displayCountries);
+
+
+    // Load countries when the page opens
+    getCountries();
+
+</script>
+
+</body>
+</html>
+```
