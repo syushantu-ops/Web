@@ -1,0 +1,225 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>People Profile Generator</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f3ff;
+    color: #312e81;
+    margin: 0;
+    padding: 30px 20px;
+}
+
+main {
+    max-width: 1000px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: #6d28d9;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #64748b;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 25px 0;
+}
+
+select, button {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+select {
+    border: 1px solid #c4b5fd;
+    background: white;
+    color: #312e81;
+}
+
+button {
+    background: #7c3aed;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #5b21b6;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#profileContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    border: 1px solid #ddd6fe;
+    box-shadow: 0 4px 12px rgba(49, 46, 129, 0.06);
+    transition: transform 0.2s;
+    overflow-wrap: anywhere;
+}
+
+.profile-card:hover {
+    transform: translateY(-4px);
+}
+
+.profile-card img {
+    display: block;
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 15px;
+    border: 4px solid #ede9fe;
+}
+
+.profile-card h2 {
+    text-align: center;
+    color: #6d28d9;
+    font-size: 19px;
+}
+
+.profile-card p {
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+#message {
+    min-height: 24px;
+    text-align: center;
+    color: #6d28d9;
+    margin: 20px 0;
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<header>
+    <h1>🌟 People Profile Generator</h1>
+    <p>Discover random people and their profile information.</p>
+</header>
+
+<div class="controls">
+    <label for="userAmount">Select number of profiles:</label>
+
+    <select id="userAmount">
+        <option value="1">1 Profile</option>
+        <option value="6" selected>6 Profiles</option>
+        <option value="9">9 Profiles</option>
+        <option value="12">12 Profiles</option>
+    </select>
+
+    <button id="createButton">Generate Profiles</button>
+</div>
+
+<p id="message">Preparing profiles...</p>
+
+<section id="profileContainer"></section>
+
+</main>
+
+<script>
+const profileContainer = document.getElementById("profileContainer");
+const message = document.getElementById("message");
+const createButton = document.getElementById("createButton");
+
+async function getProfiles() {
+    createButton.disabled = true;
+    message.textContent = "Please wait, fetching profiles...";
+    profileContainer.replaceChildren();
+
+    try {
+        const amount = document.getElementById("userAmount").value;
+
+        const result = await fetch(
+            `https://randomuser.me/api/?results=${amount}`
+        );
+
+        if (!result.ok) {
+            throw new Error("Unable to retrieve data");
+        }
+
+        const profileData = await result.json();
+
+        profileData.results.forEach(person => {
+            const profile = document.createElement("article");
+            profile.className = "profile-card";
+
+            const image = document.createElement("img");
+            image.src = person.picture.large;
+            image.alt = "User profile";
+
+            const fullName = document.createElement("h2");
+            fullName.textContent =
+                `${person.name.first} ${person.name.last}`;
+
+            const mail = document.createElement("p");
+            mail.textContent = "📧 Email: " + person.email;
+
+            const contact = document.createElement("p");
+            contact.textContent = "📞 Phone: " + person.phone;
+
+            const address = document.createElement("p");
+            address.textContent =
+                `📍 Location: ${person.location.city}, ${person.location.country}`;
+
+            profile.append(image, fullName, mail, contact, address);
+            profileContainer.appendChild(profile);
+        });
+
+        message.textContent =
+            `Done! ${profileData.results.length} profiles generated.`;
+
+    } catch (error) {
+        message.textContent =
+            "Unable to load profiles. Please check your connection and try again.";
+
+    } finally {
+        createButton.disabled = false;
+    }
+}
+
+createButton.addEventListener("click", getProfiles);
+
+getProfiles();
+</script>
+
+</body>
+</html>
+```
