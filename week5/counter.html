@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Counter Application</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e0f2fe;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            width: 320px;
+        }
+
+        h1 {
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .label {
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        #count {
+            font-size: 65px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #0891b2;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 6px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add {
+            background: #059669;
+        }
+
+        .subtract {
+            background: #e11d48;
+        }
+
+        .reset {
+            background: #475569;
+            margin-top: 12px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            opacity: 0.85;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>My Counter</h1>
+
+        <p class="label">Your Current Number</p>
+
+        <div id="count">0</div>
+
+        <button class="add" onclick="updateCount(1)">+ Increase</button>
+
+        <button class="subtract" onclick="updateCount(-1)">- Decrease</button>
+
+        <br>
+
+        <button class="reset" onclick="resetCount()">Reset Counter</button>
+    </div>
+
+    <script>
+        let count = 0;
+
+        function updateCount(value) {
+            count += value;
+            displayCount();
+        }
+
+        function resetCount() {
+            count = 0;
+            displayCount();
+        }
+
+        function displayCount() {
+            document.getElementById("count").innerText = count;
+        }
+    </script>
+
+</body>
+</html>
