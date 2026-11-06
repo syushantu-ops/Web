@@ -1,0 +1,500 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyView - Weather Dashboard</title>
+
+<style>
+:root {
+    --primary: #0284c7;
+    --primary-dark: #0369a1;
+    --background: #eaf5fc;
+    --surface: #ffffff;
+    --text: #17324d;
+    --muted: #718096;
+    --border: #d9eaf5;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--background);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 35px 18px;
+}
+
+.dashboard {
+    max-width: 900px;
+    margin: auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    background: var(--primary);
+    color: white;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    font-size: 25px;
+}
+
+h1 {
+    font-size: 27px;
+    color: var(--primary-dark);
+}
+
+.header p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.live-label {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 9px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.control-panel {
+    background: var(--surface);
+    padding: 22px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 15px rgba(30, 64, 90, 0.04);
+}
+
+.control-panel label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+select {
+    flex: 1;
+    min-width: 180px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #f8fcff;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+}
+
+select:focus {
+    border-color: var(--primary);
+}
+
+button {
+    padding: 12px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover:not(:disabled) {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.section-heading {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.weather-panel {
+    background: var(--surface);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(30, 64, 90, 0.06);
+}
+
+.weather-main {
+    background: linear-gradient(120deg, #0284c7, #38bdf8);
+    color: white;
+    padding: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.city-name {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 12px;
+}
+
+.temperature {
+    font-size: 65px;
+    font-weight: bold;
+    letter-spacing: -3px;
+}
+
+.condition {
+    font-size: 17px;
+    margin-top: 8px;
+}
+
+.weather-icon {
+    font-size: 85px;
+    filter: drop-shadow(0 5px 8px rgba(0,0,0,0.15));
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 25px;
+}
+
+.metric {
+    background: #f2f9fe;
+    border: 1px solid #e1f0fa;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.metric-label {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.metric-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--primary-dark);
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 25px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.status-box {
+    text-align: center;
+    padding: 45px 20px;
+    color: var(--muted);
+}
+
+.spinner {
+    width: 38px;
+    height: 38px;
+    border: 4px solid #dbeafe;
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    animation: rotate 0.8s linear infinite;
+}
+
+@keyframes rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media(max-width: 550px) {
+    body {
+        padding: 22px 12px;
+    }
+
+    .weather-main {
+        padding: 25px;
+    }
+
+    .temperature {
+        font-size: 48px;
+    }
+
+    .weather-icon {
+        font-size: 60px;
+    }
+
+    .metrics {
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .metric {
+        padding: 14px;
+    }
+
+    .metric-value {
+        font-size: 18px;
+    }
+}
+
+@media(max-width: 380px) {
+    .metrics {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="dashboard">
+
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">☀️</div>
+            <div>
+                <h1>SkyView</h1>
+                <p>Your daily weather companion</p>
+            </div>
+        </div>
+
+        <span class="live-label">● LIVE WEATHER</span>
+    </header>
+
+    <section class="control-panel">
+        <label for="locationPicker">Choose Location:</label>
+
+        <select id="locationPicker">
+            <option value="37.5665,126.9780,Seoul,Asia/Seoul">Seoul, KR</option>
+            <option value="37.3595,127.1054,Seongnam,Asia/Seoul">Seongnam, KR</option>
+            <option value="35.6895,139.6917,Tokyo,Asia/Tokyo">Tokyo, JP</option>
+            <option value="40.7128,-74.0060,New York,America/New_York">New York, US</option>
+            <option value="51.5074,-0.1278,London,Europe/London">London, UK</option>
+            <option value="27.7172,85.3240,Kathmandu,Asia/Kathmandu">Kathmandu, NP</option>
+        </select>
+
+        <button id="searchWeather">Check Weather →</button>
+    </section>
+
+    <h2 class="section-heading">Current Weather Report</h2>
+
+    <section id="weatherDisplay" aria-live="polite">
+        <div class="status-box">
+            <span style="font-size: 45px;">🌍</span>
+            <p>Select a city to view its weather information.</p>
+        </div>
+    </section>
+
+</main>
+
+<script>
+const weatherConditions = {
+    0: { description: "Clear Sky", icon: "☀️" },
+    1: { description: "Mainly Clear", icon: "🌤️" },
+    2: { description: "Partly Cloudy", icon: "⛅" },
+    3: { description: "Overcast", icon: "☁️" },
+    45: { description: "Foggy", icon: "🌫️" },
+    48: { description: "Rime Fog", icon: "🌫️" },
+    51: { description: "Light Drizzle", icon: "🌦️" },
+    53: { description: "Moderate Drizzle", icon: "🌦️" },
+    55: { description: "Heavy Drizzle", icon: "🌧️" },
+    56: { description: "Light Freezing Drizzle", icon: "🌧️" },
+    57: { description: "Heavy Freezing Drizzle", icon: "🌧️" },
+    61: { description: "Light Rain", icon: "🌧️" },
+    63: { description: "Moderate Rain", icon: "🌧️" },
+    65: { description: "Heavy Rain", icon: "🌧️" },
+    66: { description: "Light Freezing Rain", icon: "🌧️" },
+    67: { description: "Heavy Freezing Rain", icon: "🌧️" },
+    71: { description: "Light Snow", icon: "🌨️" },
+    73: { description: "Moderate Snow", icon: "🌨️" },
+    75: { description: "Heavy Snow", icon: "❄️" },
+    77: { description: "Snow Grains", icon: "❄️" },
+    80: { description: "Light Showers", icon: "🌦️" },
+    81: { description: "Moderate Showers", icon: "🌧️" },
+    82: { description: "Heavy Showers", icon: "⛈️" },
+    85: { description: "Light Snow Showers", icon: "🌨️" },
+    86: { description: "Heavy Snow Showers", icon: "❄️" },
+    95: { description: "Thunderstorm", icon: "⛈️" },
+    96: { description: "Thunderstorm with Hail", icon: "⛈️" },
+    99: { description: "Heavy Thunderstorm with Hail", icon: "⛈️" }
+};
+
+const weatherDisplay = document.getElementById("weatherDisplay");
+const searchButton = document.getElementById("searchWeather");
+
+let activeController = null;
+
+async function loadForecast() {
+    const selectedCity = document.getElementById("locationPicker").value;
+    const [latitude, longitude, city, timezone] = selectedCity.split(",");
+
+    if (activeController) {
+        activeController.abort();
+    }
+
+    activeController = new AbortController();
+
+    searchButton.disabled = true;
+    searchButton.textContent = "Loading...";
+
+    weatherDisplay.innerHTML = `
+        <div class="status-box">
+            <div class="spinner"></div>
+            <p>Getting weather information for ${escapeHTML(city)}...</p>
+        </div>
+    `;
+
+    try {
+        const apiAddress =
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature&timezone=${encodeURIComponent(timezone)}`;
+
+        const response = await fetch(apiAddress, {
+            signal: activeController.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+        }
+
+        const weatherData = await response.json();
+        const currentWeather = weatherData.current;
+
+        if (!currentWeather) {
+            throw new Error("Weather information is unavailable.");
+        }
+
+        const condition = weatherConditions[currentWeather.weather_code] ||
+            { description: "Unknown Condition", icon: "🌤️" };
+
+        weatherDisplay.innerHTML = `
+            <div class="weather-panel">
+
+                <div class="weather-main">
+                    <div>
+                        <p class="city-name">📍 ${escapeHTML(city)}</p>
+
+                        <div class="temperature">
+                            ${Math.round(currentWeather.temperature_2m)}°
+                        </div>
+
+                        <p class="condition">
+                            ${escapeHTML(condition.description)}
+                        </p>
+                    </div>
+
+                    <div class="weather-icon">
+                        ${condition.icon}
+                    </div>
+                </div>
+
+                <div class="metrics">
+
+                    <div class="metric">
+                        <p class="metric-label">💧 Humidity</p>
+                        <p class="metric-value">
+                            ${currentWeather.relative_humidity_2m}%
+                        </p>
+                    </div>
+
+                    <div class="metric">
+                        <p class="metric-label">🌬️ Wind Speed</p>
+                        <p class="metric-value">
+                            ${currentWeather.wind_speed_10m} km/h
+                        </p>
+                    </div>
+
+                    <div class="metric">
+                        <p class="metric-label">🌡️ Feels Like</p>
+                        <p class="metric-value">
+                            ${Math.round(currentWeather.apparent_temperature)}°C
+                        </p>
+                    </div>
+
+                    <div class="metric">
+                        <p class="metric-label">☁️ Weather Code</p>
+                        <p class="metric-value">
+                            ${currentWeather.weather_code}
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="footer">
+                    <span>Updated: ${escapeHTML(currentWeather.time.replace("T", " "))}</span>
+                    <span>Powered by Open-Meteo</span>
+                </div>
+
+            </div>
+        `;
+
+    } catch (error) {
+        if (error.name === "AbortError") return;
+
+        weatherDisplay.innerHTML = `
+            <div class="status-box">
+                <span style="font-size: 40px;">⚠️</span>
+                <p>Unable to retrieve weather data.</p>
+                <p>Please check your internet connection and try again.</p>
+            </div>
+        `;
+
+    } finally {
+        searchButton.disabled = false;
+        searchButton.textContent = "Check Weather →";
+    }
+}
+
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+searchButton.addEventListener("click", loadForecast);
+
+// Load weather automatically when the page opens.
+loadForecast();
+</script>
+
+</body>
+</html>
+```
