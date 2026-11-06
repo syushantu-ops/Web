@@ -1,1 +1,586 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Step 1 | Open Library Explorer</title>
+
+  <style>
+    :root {
+      --bg: #f4f1e9;
+      --surface: #fffdf8;
+      --text: #252b27;
+      --muted: #72776f;
+      --primary: #26745b;
+      --primary-hover: #1d5d49;
+      --border: #ded9cd;
+      --shadow: 0 16px 40px rgba(55, 48, 35, .08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse at 12% 8%, rgba(213,139,82,.13), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .crumbbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem clamp(1rem, 4vw, 3.5rem);
+      background: rgba(255,253,248,.92);
+      border-bottom: 1px solid var(--border);
+      font-family: Arial, sans-serif;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .crumbbar a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: .2s;
+    }
+
+    .crumbbar a:hover {
+      color: var(--primary);
+    }
+
+    .crumbbar .back {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 999px;
+      padding: .45rem 1.1rem;
+    }
+
+    .hero {
+      max-width: 1050px;
+      width: 100%;
+      margin: auto;
+      text-align: left;
+      padding: clamp(2.5rem, 7vw, 5rem) 1.5rem 1.8rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.4rem);
+      line-height: 1.05;
+      letter-spacing: -.055em;
+      margin-bottom: .7rem;
+      max-width: 760px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      font-size: 1rem;
+      max-width: 560px;
+    }
+
+    main {
+      flex: 1;
+      max-width: 1050px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 3rem;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    .panel-header {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    .panel-header h2 {
+      font-family: Arial, sans-serif;
+      font-size: 1.45rem;
+      margin-bottom: .5rem;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+    }
+
+    .search-form {
+      display: flex;
+      gap: .6rem;
+      margin-bottom: .7rem;
+    }
+
+    .search-form input {
+      flex: 1;
+      min-width: 0;
+      background: #f8f6f0;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .search-form input:focus {
+      background: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(38,116,91,.13);
+    }
+
+    .search-form button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 1.35rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+      white-space: nowrap;
+    }
+
+    .search-form button:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+    }
+
+    .search-form button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: .875rem;
+      font-family: Arial, sans-serif;
+      margin-bottom: 2rem;
+    }
+
+    .results-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-title {
+      font-family: Arial, sans-serif;
+      font-size: 1.15rem;
+    }
+
+    .results-count {
+      font-size: .875rem;
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .book-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: .25s;
+      box-shadow: 0 5px 18px rgba(55,48,35,.045);
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(38,116,91,.45);
+      box-shadow: 0 15px 28px rgba(55,48,35,.1);
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 245px;
+      background: #eee9dd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 12px;
+      transition: .3s;
+    }
+
+    .book-card:hover .book-cover img {
+      transform: scale(1.04);
+    }
+
+    .book-cover-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      color: #77796f;
+      font-size: .85rem;
+      text-align: center;
+    }
+
+    .book-cover-placeholder span {
+      font-size: 2.5rem;
+    }
+
+    .book-info {
+      padding: 1.05rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .book-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: .4rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-author {
+      color: var(--primary);
+      font-family: Arial, sans-serif;
+      font-size: .9rem;
+      margin-bottom: .6rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-details {
+      margin-top: auto;
+      padding-top: .8rem;
+      border-top: 1px solid #eeeae1;
+      font-size: .8rem;
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-box {
+      text-align: center;
+      padding: 3.5rem 1rem;
+      color: var(--muted);
+      font-family: Arial, sans-serif;
+    }
+
+    .status-box .icon {
+      font-size: 2.5rem;
+      margin-bottom: .75rem;
+      display: block;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(38,116,91,.18);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .85rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+      font-family: Arial, sans-serif;
+    }
+
+    @media (max-width: 600px) {
+      .hero {
+        text-align: left;
+      }
+
+      .search-form {
+        flex-direction: column;
+      }
+
+      .search-form button {
+        justify-content: center;
+      }
+
+      .results-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .75rem;
+      }
+
+      .book-cover {
+        height: 190px;
+      }
+
+      .book-info {
+        padding: .85rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .book-cover {
+        height: 230px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="crumbbar">
+    <div>
+      <a href="../index.html">Web Programming</a> &nbsp; / &nbsp;
+      <a href="index.html">Week 7</a> &nbsp; / &nbsp; Task 1
+    </div>
+
+    <a class="back" href="index.html">Back</a>
+  </div>
+
+  <header class="hero">
+    <h1>Find your next read.</h1>
+    <p>Explore the Open Library catalogue by searching for a book title.</p>
+  </header>
+
+  <main>
+    <div class="panel">
+
+      <div class="panel-header">
+        <h2>Explore the catalogue</h2>
+        <p>Enter a title below to discover matching books and editions.</p>
+      </div>
+
+      <form class="search-form" id="searchForm">
+        <input
+          id="query"
+          type="search"
+          placeholder="e.g. The Great Gatsby, Dune, Kafka..."
+          aria-label="Book title"
+          autocomplete="off"
+          required
+        >
+
+        <button id="searchButton" type="submit">
+          Find books&nbsp; →
+        </button>
+      </form>
+
+      <p class="hint" id="hint">
+        Try a title such as “Dune”, “The Hobbit”, or “Pride and Prejudice”.
+      </p>
+
+      <div class="results-meta">
+        <h2 class="results-title">Your discoveries</h2>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+
+      <div class="results" id="results" aria-live="polite">
+        <div class="status-box">
+          <span class="icon">🔍</span>
+          <p>Your search results will appear here.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    Open Library Explorer · Powered by the Open Library Search API
+  </footer>
+
+  <script>
+    const searchForm = document.getElementById('searchForm');
+    const queryInput = document.getElementById('query');
+    const searchButton = document.getElementById('searchButton');
+    const resultsContainer = document.getElementById('results');
+    const resultsCount = document.getElementById('resultsCount');
+
+    searchForm.addEventListener('submit', event => {
+      event.preventDefault();
+      loadBookResults();
+    });
+
+    async function loadBookResults() {
+      const query = queryInput.value.trim();
+
+      if (!query) return;
+
+      searchButton.disabled = true;
+      resultsCount.textContent = '';
+
+      resultsContainer.innerHTML = `
+        <div class="status-box">
+          <div class="spinner"></div>
+          <p>Searching Open Library for "<strong>${escapeHtml(query)}</strong>"…</p>
+        </div>
+      `;
+
+      try {
+        const endpoint =
+          `https://openlibrary.org/search.json?title=${encodeURIComponent(query)}&limit=12`;
+
+        const response = await fetch(endpoint);
+
+        if (!response.ok) {
+          throw new Error(`Server returned HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        const docs = data.docs || [];
+
+        if (docs.length === 0) {
+          resultsContainer.innerHTML = `
+            <div class="status-box">
+              <span class="icon">📖</span>
+              <p>
+                No books found for "<strong>${escapeHtml(query)}</strong>".
+                Try searching with different keywords.
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        resultsCount.textContent =
+          `Showing ${docs.length} of ${data.numFound.toLocaleString()} results`;
+
+        const grid = document.createElement('div');
+        grid.className = 'results-grid';
+
+        docs.forEach(book => {
+          const title = book.title || 'Untitled';
+
+          const author =
+            (book.author_name && book.author_name.length > 0)
+              ? book.author_name[0]
+              : 'Unknown Author';
+
+          const year = book.first_publish_year || 'N/A';
+
+          const editions = book.edition_count
+            ? `${book.edition_count} ed.`
+            : '';
+
+          const card = document.createElement('article');
+          card.className = 'book-card';
+
+          const coverHtml = book.cover_i
+            ? `<img
+                 src="https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg"
+                 alt="${escapeHtml(title)} cover"
+                 loading="lazy"
+               >`
+            : `
+              <div class="book-cover-placeholder">
+                <span>📘</span>
+                <div>No Cover Available</div>
+              </div>
+            `;
+
+          card.innerHTML = `
+            <div class="book-cover">
+              ${coverHtml}
+            </div>
+
+            <div class="book-info">
+              <h3 class="book-title" title="${escapeHtml(title)}">
+                ${escapeHtml(title)}
+              </h3>
+
+              <p class="book-author" title="${escapeHtml(author)}">
+                by ${escapeHtml(author)}
+              </p>
+
+              <div class="book-details">
+                <span>📅 ${escapeHtml(String(year))}</span>
+                <span>${escapeHtml(editions)}</span>
+              </div>
+            </div>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        resultsContainer.replaceChildren(grid);
+
+      } catch (err) {
+        console.error(err);
+
+        resultsContainer.innerHTML = `
+          <div class="status-box">
+            <span class="icon">⚠️</span>
+            <p>
+              Unable to load books. Please verify your internet
+              connection and try again.
+            </p>
+          </div>
+        `;
+
+      } finally {
+        searchButton.disabled = false;
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+
+</body>
+</html>
