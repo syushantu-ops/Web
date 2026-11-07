@@ -1,245 +1,456 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Programming – Coursework</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Programming – Weekly Tasks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f5f7;
+    --panel: #ffffff;
+    --ink: #1c2530;
+    --muted: #66727f;
+    --line: #dde2e8;
+    --accent: #1f5eff;
+    --accent-soft: #e6edff;
+    --hover: #eef1f4;
+    --head: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    --side: 320px;
+  }
+  @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #f5f6f8;
-      --surface: #ffffff;
-      --ink: #14181f;
-      --muted: #5b6472;
-      --line: #d3d8e0;
-      --link: #1a47d6;
-      --link-text-on: #ffffff;
-      --visited: #6a3fb5;
-      --font: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --bg: #12171d;
+      --panel: #1a2129;
+      --ink: #e7ecf1;
+      --muted: #8d99a6;
+      --line: #2b3541;
+      --accent: #6f98ff;
+      --accent-soft: #22304f;
+      --hover: #222b35;
     }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    display: grid;
+    grid-template-columns: var(--side) 1fr;
+    font-size: 15px;
+  }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #12151b;
-        --surface: #1b2029;
-        --ink: #eef1f6;
-        --muted: #9aa3b2;
-        --line: #333a47;
-        --link: #8aa8ff;
-        --link-text-on: #12151b;
-        --visited: #b79af0;
-      }
+  /* ---------- sidebar ---------- */
+  aside {
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-height: 0;
+  }
+  .brand { padding: 20px 20px 14px; border-bottom: 1px solid var(--line); }
+  .brand h1 { font: 700 22px/1.15 var(--head); margin: 0 0 4px; letter-spacing: -0.01em; }
+  .brand p { margin: 0; color: var(--muted); font-size: 13px; }
+  .search { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .search input {
+    width: 100%; padding: 9px 12px; font: inherit;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); color: var(--ink);
+  }
+  .search input:focus-visible, button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  nav { overflow-y: auto; flex: 1; padding: 8px 8px 24px; }
+  .week { margin-bottom: 2px; }
+  .week-head {
+    display: flex; align-items: center; width: 100%;
+    gap: 8px; padding: 9px 10px; border: 0; background: none;
+    font: 600 14px var(--body); color: var(--ink);
+    border-radius: 8px; cursor: pointer; text-align: left;
+  }
+  .week-head:hover { background: var(--hover); }
+  .week-head .chev { width: 10px; transition: transform .15s; color: var(--muted); flex: none; }
+  .week.open .chev { transform: rotate(90deg); }
+  .week-head .count {
+    margin-left: auto; color: var(--muted); font-weight: 500; font-size: 12px;
+    background: var(--bg); border-radius: 99px; padding: 1px 8px;
+  }
+  .week-head.active { background: var(--accent-soft); }
+  .tasks { display: none; margin: 2px 0 8px 18px; border-left: 1px solid var(--line); padding-left: 6px; }
+  .week.open .tasks { display: block; }
+  .task {
+    display: block; width: 100%; text-align: left; border: 0; background: none;
+    padding: 7px 10px; border-radius: 6px; cursor: pointer;
+    font: 400 14px var(--body); color: var(--ink);
+  }
+  .task:hover { background: var(--hover); }
+  .task.active { background: var(--accent); color: #fff; }
+  .status { padding: 16px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .status code { background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+
+  /* ---------- main ---------- */
+  main { display: flex; flex-direction: column; height: 100vh; min-width: 0; min-height: 0; }
+  .bar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
+    min-height: 56px;
+  }
+  .bar .title { font: 700 17px var(--head); margin-right: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .title small { font: 400 13px var(--body); color: var(--muted); margin-left: 8px; }
+  .btn {
+    font: 500 13px var(--body); padding: 7px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
+  }
+  .btn:hover { background: var(--hover); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  #menuBtn { display: none; }
+  .stage { flex: 1; min-height: 0; position: relative; overflow: auto; }
+  iframe#runner { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
+
+  /* week overview grid */
+  .grid {
+    display: grid; gap: 18px; padding: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    overflow: hidden; display: flex; flex-direction: column; cursor: pointer;
+    transition: border-color .15s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .thumb { height: 190px; overflow: hidden; position: relative; background: #fff; border-bottom: 1px solid var(--line); }
+  .thumb iframe {
+    width: 1000px; height: 650px; border: 0; transform: scale(.28); transform-origin: 0 0;
+    pointer-events: none;
+  }
+  .card-body { padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+  .card-body strong { font-weight: 600; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .card-body span { color: var(--muted); font-size: 12px; }
+
+  .welcome { max-width: 640px; margin: 12vh auto; padding: 0 24px; }
+  .welcome h2 { font: 700 30px/1.15 var(--head); margin: 0 0 10px; letter-spacing: -0.01em; }
+  .welcome p { color: var(--muted); line-height: 1.6; margin: 0 0 10px; }
+
+  /* ---------- mobile ---------- */
+  @media (max-width: 800px) {
+    body { grid-template-columns: 1fr; }
+    aside {
+      position: fixed; inset: 0 25% 0 0; z-index: 10; max-width: 340px;
+      transform: translateX(-102%); transition: transform .2s;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--font);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .page {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: clamp(32px, 8vw, 88px) 24px 64px;
-    }
-
-    header {
-      margin-bottom: clamp(40px, 7vw, 72px);
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: clamp(2.5rem, 8vw, 4.5rem);
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.03em;
-    }
-
-    .intro {
-      margin: 0;
-      max-width: 46ch;
-      color: var(--muted);
-      font-size: 1.0625rem;
-    }
-
-    .intro .seen {
-      color: var(--visited);
-      font-weight: 600;
-    }
-
-    .weeks {
-      display: grid;
-      gap: clamp(28px, 5vw, 44px);
-    }
-
-    .week {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 12px 32px;
-      align-items: center;
-    }
-
-    .week-name {
-      margin: 0;
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      font-weight: 800;
-      font-size: clamp(2.25rem, 5vw, 3.25rem);
-      line-height: 1;
-      letter-spacing: -0.03em;
-    }
-
-    .week-name span {
-      font-size: 1rem;
-      font-weight: 400;
-      letter-spacing: 0;
-      color: var(--muted);
-    }
-
-    .tasks {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-      gap: 10px;
-    }
-
-    .task {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 56px;
-      background: var(--surface);
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      color: var(--link);
-      font-size: 1.25rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .task:visited {
-      color: var(--visited);
-      border-color: var(--visited);
-    }
-
-    .task:hover {
-      background: var(--link);
-      border-color: var(--link);
-      color: var(--link-text-on);
-    }
-
-    .task:visited:hover {
-      background: var(--visited);
-      border-color: var(--visited);
-      color: var(--link-text-on);
-    }
-
-    .task:focus-visible {
-      outline: 3px solid var(--ink);
-      outline-offset: 3px;
-    }
-
-    @media (max-width: 640px) {
-      .week { grid-template-columns: 1fr; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .task { transition: none; }
-    }
-  </style>
+    body.menu aside { transform: none; box-shadow: 0 0 0 100vmax rgba(0,0,0,.4); }
+    #menuBtn { display: inline-flex; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
 </head>
 <body>
 
-  <div class="page">
-    <header>
-      <h1>Web Programming</h1>
-      <p class="intro">Pick a week, then a task number to open its page. Tasks you've already opened turn <span class="seen">purple</span>.</p>
-    </header>
-
-    <main class="weeks">
-
-      <!-- Folder: Week2_1 -->
-      <section class="week" aria-labelledby="w2-1">
-        <h2 class="week-name" id="w2-1"><span>Week</span>2.1</h2>
-        <ul class="tasks">
-          <li><a class="task" href="Week2_1/task1.html" aria-label="Week 2.1, task 1">1</a></li>
-          <li><a class="task" href="Week2_1/task2.html" aria-label="Week 2.1, task 2">2</a></li>
-          <li><a class="task" href="Week2_1/task3.html" aria-label="Week 2.1, task 3">3</a></li>
-          <li><a class="task" href="Week2_1/task4.html" aria-label="Week 2.1, task 4">4</a></li>
-          <li><a class="task" href="Week2_1/task5.html" aria-label="Week 2.1, task 5">5</a></li>
-          <li><a class="task" href="Week2_1/task6.html" aria-label="Week 2.1, task 6">6</a></li>
-          <li><a class="task" href="Week2_1/task7.html" aria-label="Week 2.1, task 7">7</a></li>
-          <li><a class="task" href="Week2_1/task8.html" aria-label="Week 2.1, task 8">8</a></li>
-        </ul>
-      </section>
-
-      <!-- Folder: week2_2 -->
-      <section class="week" aria-labelledby="w2-2">
-        <h2 class="week-name" id="w2-2"><span>Week</span>2.2</h2>
-        <ul class="tasks">
-          <li><a class="task" href="week2_2/task1.html" aria-label="Week 2.2, task 1">1</a></li>
-          <li><a class="task" href="week2_2/task2.html" aria-label="Week 2.2, task 2">2</a></li>
-          <li><a class="task" href="week2_2/task3.html" aria-label="Week 2.2, task 3">3</a></li>
-          <li><a class="task" href="week2_2/task4.html" aria-label="Week 2.2, task 4">4</a></li>
-          <li><a class="task" href="week2_2/task5.html" aria-label="Week 2.2, task 5">5</a></li>
-          <li><a class="task" href="week2_2/task6.html" aria-label="Week 2.2, task 6">6</a></li>
-          <li><a class="task" href="week2_2/task7.html" aria-label="Week 2.2, task 7">7</a></li>
-          <li><a class="task" href="week2_2/task8.html" aria-label="Week 2.2, task 8">8</a></li>
-        </ul>
-      </section>
-
-      <!-- Folder: week3_1 -->
-      <section class="week" aria-labelledby="w3-1">
-        <h2 class="week-name" id="w3-1"><span>Week</span>3.1</h2>
-        <ul class="tasks">
-          <li><a class="task" href="week3_1/task1.html" aria-label="Week 3.1, task 1">1</a></li>
-          <li><a class="task" href="week3_1/task2.html" aria-label="Week 3.1, task 2">2</a></li>
-          <li><a class="task" href="week3_1/task3.html" aria-label="Week 3.1, task 3">3</a></li>
-          <li><a class="task" href="week3_1/task4.html" aria-label="Week 3.1, task 4">4</a></li>
-          <li><a class="task" href="week3_1/task5.html" aria-label="Week 3.1, task 5">5</a></li>
-          <li><a class="task" href="week3_1/task6.html" aria-label="Week 3.1, task 6">6</a></li>
-          <li><a class="task" href="week3_1/task7.html" aria-label="Week 3.1, task 7">7</a></li>
-          <li><a class="task" href="week3_1/task8.html" aria-label="Week 3.1, task 8">8</a></li>
-        </ul>
-      </section>
-
-      <!-- Folder: week3_2 -->
-      <section class="week" aria-labelledby="w3-2">
-        <h2 class="week-name" id="w3-2"><span>Week</span>3.2</h2>
-        <ul class="tasks">
-          <li><a class="task" href="week3_2/task1.html" aria-label="Week 3.2, task 1">1</a></li>
-          <li><a class="task" href="week3_2/task2.html" aria-label="Week 3.2, task 2">2</a></li>
-          <li><a class="task" href="week3_2/task3.html" aria-label="Week 3.2, task 3">3</a></li>
-          <li><a class="task" href="week3_2/task4.html" aria-label="Week 3.2, task 4">4</a></li>
-          <li><a class="task" href="week3_2/task5.html" aria-label="Week 3.2, task 5">5</a></li>
-          <li><a class="task" href="week3_2/task6.html" aria-label="Week 3.2, task 6">6</a></li>
-          <li><a class="task" href="week3_2/task7.html" aria-label="Week 3.2, task 7">7</a></li>
-        </ul>
-      </section>
-
-      <section class="week" aria-labelledby="w4-1">
-        <h2 class="week-name" id="w4-1"><span>Week</span>4.1</h2>
-        <ul class="tasks">
-          <li><a class="task" href="week4_1/task1.html" aria-label="Week 4.1, task 1">1</a></li>
-          <li><a class="task" href="week4_1/task2.html" aria-label="Week 4.1, task 2">2</a></li>
-          <li><a class="task" href="week4_1/task3.html" aria-label="Week 4.1, task 3">3</a></li>
-          <li><a class="task" href="week4_1/task4.html" aria-label="Week 4.1, task 4">4</a></li>
-        </ul>
-      </section>
-
-    </main>
+<aside id="side">
+  <div class="brand">
+    <h1>Web Programming</h1>
+    <p id="subtitle">Weekly tasks</p>
   </div>
+  <div class="search"><input id="q" type="search" placeholder="Filter weeks and tasks" aria-label="Filter weeks and tasks"></div>
+  <nav id="nav"><div class="status">Loading tasks from GitHub…</div></nav>
+</aside>
 
+<main>
+  <div class="bar">
+    <button class="btn" id="menuBtn" type="button">Weeks</button>
+    <div class="title" id="title">All tasks</div>
+    <button class="btn" id="reload" type="button" hidden>Reload</button>
+    <a class="btn primary" id="newtab" href="#" target="_blank" rel="noopener" hidden>Open in new tab</a>
+  </div>
+  <div class="stage" id="stage"></div>
+</main>
+
+<script>
+/* ============================================================
+   SETTINGS
+   On GitHub Pages (https://USER.github.io/REPO/) the owner and
+   repo are detected automatically. Edit these only if you host
+   the page somewhere else.
+   ============================================================ */
+const FALLBACK_OWNER = "syushantu-ops";
+const FALLBACK_REPO  = "Web";
+
+/* Files that should not appear in the list */
+const IGNORE = new Set(["index.html"]);
+
+/* ---------- repo detection ---------- */
+function detectRepo() {
+  const host = location.hostname;
+  if (host.endsWith(".github.io")) {
+    const owner = host.split(".")[0];
+    const repo = location.pathname.split("/").filter(Boolean)[0];
+    if (repo && !repo.endsWith(".html")) return { owner, repo };
+  }
+  return { owner: FALLBACK_OWNER, repo: FALLBACK_REPO };
+}
+const { owner: OWNER, repo: REPO } = detectRepo();
+
+/* ---------- helpers ---------- */
+const $ = (id) => document.getElementById(id);
+const natural = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+
+function weekSortKey(name) {
+  const m = name.match(/week\s*(\d+)(?:[_\-\s]*(\d+))?/i);
+  if (!m) return [999, 0];
+  return [parseInt(m[1], 10), m[2] ? parseInt(m[2], 10) : 0];
+}
+function compareWeeks(a, b) {
+  const ka = weekSortKey(a), kb = weekSortKey(b);
+  return ka[0] - kb[0] || ka[1] - kb[1] || natural.compare(a, b);
+}
+function prettyWeek(folder) {
+  const m = folder.match(/^week\s*(\d+)(?:[_\-\s]*(\d+))?$/i);
+  if (m) return `Week ${m[1]}` + (m[2] ? ` · part ${m[2]}` : "");
+  return folder.replace(/[_\-]+/g, " ");
+}
+function prettyTask(file) {
+  return file.replace(/\.html?$/i, "").replace(/[_\-]+/g, " ");
+}
+function urlFor(path) {
+  return path.split("/").map(encodeURIComponent).join("/");
+}
+
+/* ---------- state ---------- */
+let weeks = [];          // [{folder, label, tasks:[{path,name}]}]
+let current = null;      // {type:'task'|'week', ...}
+
+/* ---------- load file list from GitHub ---------- */
+async function gh(url) {
+  const r = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+  if (!r.ok) {
+    const err = new Error("GitHub API " + r.status);
+    err.status = r.status;
+    throw err;
+  }
+  return r.json();
+}
+
+async function loadTree() {
+  const cacheKey = `tree:${OWNER}/${REPO}`;
+  try {
+    const c = JSON.parse(sessionStorage.getItem(cacheKey) || "null");
+    if (c && Date.now() - c.t < 5 * 60 * 1000) return c.paths;
+  } catch (e) { /* storage unavailable */ }
+
+  const repoInfo = await gh(`https://api.github.com/repos/${OWNER}/${REPO}`);
+  const tree = await gh(`https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${repoInfo.default_branch}?recursive=1`);
+  const paths = tree.tree.filter(n => n.type === "blob").map(n => n.path);
+  try { sessionStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), paths })); } catch (e) {}
+  return paths;
+}
+
+function buildWeeks(paths) {
+  const map = new Map();
+  for (const p of paths) {
+    if (!/\.html?$/i.test(p)) continue;
+    const parts = p.split("/");
+    const file = parts[parts.length - 1];
+    if (parts.length === 1 && IGNORE.has(file.toLowerCase())) continue;
+    if (parts[0].startsWith(".")) continue;
+    const folder = parts.length === 1 ? "(root)" : parts[0];
+    if (!map.has(folder)) map.set(folder, []);
+    map.get(folder).push({ path: p, name: prettyTask(parts.slice(1).join(" / ") || file) });
+  }
+  const out = [...map.entries()].map(([folder, tasks]) => {
+    tasks.sort((a, b) => natural.compare(a.name, b.name));
+    return {
+      folder,
+      label: folder === "(root)" ? "Other pages" : prettyWeek(folder),
+      tasks
+    };
+  });
+  out.sort((a, b) => {
+    if (a.folder === "(root)") return 1;
+    if (b.folder === "(root)") return -1;
+    return compareWeeks(a.folder, b.folder);
+  });
+  return out;
+}
+
+/* ---------- sidebar ---------- */
+function renderNav(filter = "") {
+  const nav = $("nav");
+  nav.textContent = "";
+  const f = filter.trim().toLowerCase();
+  let shown = 0;
+
+  for (const w of weeks) {
+    const matchWeek = f && (w.label.toLowerCase().includes(f) || w.folder.toLowerCase().includes(f));
+    const tasks = f && !matchWeek ? w.tasks.filter(t => t.name.toLowerCase().includes(f)) : w.tasks;
+    if (!tasks.length) continue;
+    shown++;
+
+    const wrap = document.createElement("div");
+    wrap.className = "week";
+    const isCurrentWeek = current && current.folder === w.folder;
+    if (f || isCurrentWeek) wrap.classList.add("open");
+
+    const head = document.createElement("button");
+    head.type = "button";
+    head.className = "week-head" + (current && current.type === "week" && current.folder === w.folder ? " active" : "");
+    head.innerHTML = `<svg class="chev" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span></span><span class="count"></span>`;
+    head.children[1].textContent = w.label;
+    head.children[2].textContent = tasks.length;
+    head.title = "Show all tasks in this week";
+    head.addEventListener("click", () => {
+      wrap.classList.toggle("open");
+      openWeek(w.folder);
+    });
+    wrap.appendChild(head);
+
+    const list = document.createElement("div");
+    list.className = "tasks";
+    for (const t of tasks) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "task" + (current && current.path === t.path ? " active" : "");
+      b.textContent = t.name;
+      b.addEventListener("click", () => openTask(t.path));
+      list.appendChild(b);
+    }
+    wrap.appendChild(list);
+    nav.appendChild(wrap);
+  }
+  if (!shown) nav.innerHTML = `<div class="status">Nothing matches “${f.replace(/[<>&]/g, "")}”.</div>`;
+}
+
+/* ---------- main area ---------- */
+function setBar(title, sub, path) {
+  $("title").innerHTML = "";
+  $("title").append(title);
+  if (sub) { const s = document.createElement("small"); s.textContent = sub; $("title").append(s); }
+  const link = $("newtab");
+  if (path) { link.href = urlFor(path); link.hidden = false; } else { link.hidden = true; }
+  $("reload").hidden = !path;
+}
+
+function closeMenu() { document.body.classList.remove("menu"); }
+
+function showWelcome() {
+  current = null;
+  setBar("All tasks");
+  const total = weeks.reduce((n, w) => n + w.tasks.length, 0);
+  $("stage").innerHTML = `
+    <div class="welcome">
+      <h2>Pick a week to get started</h2>
+      <p>${weeks.length} weeks and ${total} tasks are listed on the left. Click a week to see all its tasks side by side, or click a task to run it here.</p>
+      <p>New files you push to the repository show up automatically within a few minutes.</p>
+    </div>`;
+  location.hash = "";
+  renderNav($("q").value);
+}
+
+function openWeek(folder) {
+  const w = weeks.find(x => x.folder === folder);
+  if (!w) return showWelcome();
+  current = { type: "week", folder };
+  setBar(w.label, `${w.tasks.length} task${w.tasks.length === 1 ? "" : "s"}`);
+  const grid = document.createElement("div");
+  grid.className = "grid";
+  for (const t of w.tasks) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    const thumb = document.createElement("div");
+    thumb.className = "thumb";
+    const fr = document.createElement("iframe");
+    fr.loading = "lazy";
+    fr.src = urlFor(t.path);
+    fr.title = "Preview of " + t.name;
+    fr.tabIndex = -1;
+    thumb.appendChild(fr);
+    const body = document.createElement("div");
+    body.className = "card-body";
+    body.innerHTML = "<strong></strong><span>Run</span>";
+    body.firstChild.textContent = t.name;
+    card.append(thumb, body);
+    const go = () => openTask(t.path);
+    card.addEventListener("click", go);
+    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    grid.appendChild(card);
+  }
+  $("stage").textContent = "";
+  $("stage").appendChild(grid);
+  history.replaceState(null, "", "#" + encodeURIComponent(folder));
+  renderNav($("q").value);
+  closeMenu();
+}
+
+function openTask(path) {
+  const parts = path.split("/");
+  const folder = parts.length === 1 ? "(root)" : parts[0];
+  const w = weeks.find(x => x.folder === folder);
+  const t = w && w.tasks.find(x => x.path === path);
+  if (!t) return showWelcome();
+  current = { type: "task", folder, path };
+  setBar(t.name, w.label, path);
+  const fr = document.createElement("iframe");
+  fr.id = "runner";
+  fr.title = t.name;
+  fr.src = urlFor(path);
+  $("stage").textContent = "";
+  $("stage").appendChild(fr);
+  history.replaceState(null, "", "#" + encodeURIComponent(path));
+  renderNav($("q").value);
+  closeMenu();
+}
+
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (!h) return showWelcome();
+  if (/\.html?$/i.test(h)) return openTask(h);
+  if (weeks.some(w => w.folder === h)) return openWeek(h);
+  showWelcome();
+}
+
+/* ---------- events ---------- */
+$("q").addEventListener("input", e => renderNav(e.target.value));
+$("menuBtn").addEventListener("click", () => document.body.classList.toggle("menu"));
+$("reload").addEventListener("click", () => {
+  const fr = $("runner");
+  if (fr) fr.src = fr.src;
+});
+window.addEventListener("hashchange", () => {
+  const h = decodeURIComponent(location.hash.slice(1));
+  const now = current ? (current.type === "task" ? current.path : current.folder) : "";
+  if (h !== now) route();
+});
+
+/* ---------- start ---------- */
+(async function init() {
+  $("subtitle").textContent = `${OWNER}/${REPO}`;
+  try {
+    const paths = await loadTree();
+    weeks = buildWeeks(paths);
+    if (!weeks.length) {
+      $("nav").innerHTML = `<div class="status">No .html files were found in this repository yet.</div>`;
+      return;
+    }
+    renderNav();
+    route();
+  } catch (err) {
+    const limited = err.status === 403 || err.status === 429;
+    $("nav").innerHTML = `<div class="status">${
+      limited
+        ? "GitHub is limiting requests from this network right now. Wait a few minutes and reload."
+        : `Could not load the task list (${err.message}). Check that the repository is public and that <code>${OWNER}/${REPO}</code> is correct.`
+    }</div>`;
+  }
+})();
+</script>
 </body>
 </html>
+
