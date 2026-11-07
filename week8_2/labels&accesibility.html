@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topic 05 | Labels & Accessibility</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 50px 20px;
+      background: linear-gradient(135deg, #f3efff, #e8e5ff, #f9f5ff);
+      color: #292442;
+    }
+
+    main {
+      max-width: 680px;
+      margin: auto;
+      padding: 38px;
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 15px 45px rgba(65, 45, 110, 0.10);
+      border: 1px solid #eee9fa;
+    }
+
+    .top-label {
+      display: inline-block;
+      padding: 7px 14px;
+      margin-bottom: 18px;
+      border-radius: 20px;
+      background: #eee8ff;
+      color: #7652bd;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      color: #39276b;
+      font-size: 1.9rem;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    .description {
+      color: #77718a;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    code {
+      background: #f0eaff;
+      color: #7652bd;
+      padding: 3px 7px;
+      border-radius: 5px;
+      font-size: 0.88em;
+    }
+
+    .box {
+      background: #faf9ff;
+      border: 1px solid #e9e2f5;
+      padding: 22px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      transition: 0.25s ease;
+    }
+
+    .box:hover {
+      border-color: #c7b5ef;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(80, 55, 130, 0.07);
+    }
+
+    .method-tag {
+      display: inline-block;
+      color: #7652bd;
+      background: #eee8ff;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .box-title {
+      display: block;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #40345f;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1.5px solid #ded8ed;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: #30264a;
+      background: #fff;
+      transition: 0.2s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #8863cf;
+      box-shadow: 0 0 0 4px rgba(136, 99, 207, 0.12);
+    }
+
+    input::placeholder {
+      color: #b3adbf;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid #e9e2f5;
+      border-radius: 11px;
+      margin-top: 12px;
+    }
+
+    input[type="checkbox"] {
+      width: 19px;
+      height: 19px;
+      accent-color: #7652bd;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .input-row label {
+      color: #51476a;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .input-row:has(input:checked) {
+      background: #f1ebff;
+      border-color: #bca6e8;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 11px 18px;
+      background: #eee8ff;
+      color: #6946a9;
+      text-decoration: none;
+      border-radius: 9px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: 0.25s ease;
+    }
+
+    .back:hover {
+      background: #7652bd;
+      color: #fff;
+      transform: translateX(-3px);
+    }
+
+    .footer {
+      text-align: center;
+      color: #aaa3b9;
+      font-size: 0.78rem;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 500px) {
+      body {
+        padding: 25px 13px;
+      }
+
+      main {
+        padding: 25px 18px;
+      }
+
+      h1 {
+        font-size: 1.55rem;
+      }
+
+      .box {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+
+    <span class="top-label">HTML FUNDAMENTALS · LESSON 05</span>
+
+    <h1>Labels & Accessibility</h1>
+
+    <p class="description">
+      Learn how HTML labels improve accessibility by connecting
+      text descriptions with form controls. Explore two different
+      methods of associating labels with input elements.
+    </p>
+
+    <!-- Method A: Explicit linking -->
+    <div class="box">
+
+      <span class="method-tag">METHOD 01</span>
+
+      <label class="box-title" for="explicit-input">
+        Explicit Label Association
+      </label>
+
+      <input
+        type="text"
+        id="explicit-input"
+        placeholder="Enter something here..."
+      >
+
+      <p class="description" style="font-size: 0.82rem; margin: 12px 0 0;">
+        Uses the <code>for</code> attribute to connect a label
+        with an input through its unique <code>id</code>.
+      </p>
+
+    </div>
+
+    <!-- Method B: Implicit wrapping -->
+    <div class="box">
+
+      <span class="method-tag">METHOD 02</span>
+
+      <strong class="box-title">
+        Implicit Label Association
+      </strong>
+
+      <div class="input-row">
+
+        <label>
+          <input type="checkbox" id="newsletter">
+          Subscribe to the newsletter by selecting this checkbox.
+        </label>
+
+      </div>
+
+      <p class="description" style="font-size: 0.82rem; margin: 12px 0 0;">
+        The input is placed inside the label, so clicking
+        the associated text also activates the checkbox.
+      </p>
+
+    </div>
+
+    <a class="back" href="index.html">
+      ← Back to Index
+    </a>
+
+    <div class="footer">
+      HTML5 Learning Series · Topic 05
+    </div>
+
+  </main>
+
+</body>
+</html>
