@@ -1,0 +1,515 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Personal Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --page: #eef3f6;
+      --panel: #ffffff;
+      --ink: #172b3a;
+      --muted: #71808c;
+      --line: #dce5e9;
+      --field: #f8fafb;
+      --accent: #087f8c;
+      --accent-dark: #06636d;
+      --accent-soft: rgba(8, 127, 140, .13);
+      --good: #16845b;
+      --good-bg: #effaf5;
+      --bad: #c74353;
+      --bad-bg: #fff2f3;
+      --heading: "Space Grotesk", sans-serif;
+      --body: "DM Sans", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 48px 20px;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(8,127,140,.10), transparent 28%),
+        radial-gradient(circle at 88% 90%, rgba(35,91,126,.10), transparent 30%),
+        var(--page);
+      font-family: var(--body);
+      line-height: 1.55;
+    }
+
+    .contact-shell {
+      width: min(100%, 980px);
+      display: grid;
+      grid-template-columns: 0.82fr 1.18fr;
+      overflow: hidden;
+      border: 1px solid rgba(23,43,58,.08);
+      border-radius: 26px;
+      background: var(--panel);
+      box-shadow: 0 24px 70px rgba(29, 57, 72, .13);
+    }
+
+    .intro-panel {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 38px;
+      color: #fff;
+      background: linear-gradient(155deg, #123b50 0%, #087f8c 100%);
+    }
+
+    .intro-panel::before,
+    .intro-panel::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 50%;
+    }
+
+    .intro-panel::before {
+      width: 330px;
+      height: 330px;
+      right: -190px;
+      top: 18%;
+      box-shadow:
+        0 0 0 28px rgba(255,255,255,.035),
+        0 0 0 58px rgba(255,255,255,.025);
+    }
+
+    .intro-panel::after {
+      width: 220px;
+      height: 220px;
+      left: -155px;
+      bottom: -90px;
+    }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--heading);
+      font-size: .88rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,.45);
+      border-radius: 10px;
+      font-size: 1.1rem;
+    }
+
+    .intro-copy {
+      margin: 72px 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #a8e5e5;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .intro-copy h1 {
+      max-width: 340px;
+      margin-bottom: 18px;
+      font-family: var(--heading);
+      font-size: clamp(2.2rem, 4vw, 3.35rem);
+      line-height: 1.08;
+      letter-spacing: -.055em;
+    }
+
+    .intro-copy p {
+      max-width: 310px;
+      color: rgba(255,255,255,.78);
+      font-size: .96rem;
+      line-height: 1.8;
+    }
+
+    .side-note {
+      margin-top: 54px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.72);
+      font-size: .8rem;
+    }
+
+    .form-panel {
+      padding: 48px 52px;
+    }
+
+    .form-heading {
+      margin-bottom: 30px;
+    }
+
+    .form-heading .step {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .step::before {
+      content: "";
+      width: 22px;
+      height: 2px;
+      border-radius: 5px;
+      background: var(--accent);
+    }
+
+    .form-heading h2 {
+      font-family: var(--heading);
+      font-size: 1.8rem;
+      letter-spacing: -.04em;
+    }
+
+    .form-heading p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0 0 22px;
+      padding: 20px 20px 5px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fcfdfd;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    fieldset:focus-within {
+      border-color: rgba(8,127,140,.55);
+      box-shadow: 0 0 0 3px rgba(8,127,140,.06);
+    }
+
+    legend {
+      padding: 0 9px;
+      color: var(--accent-dark);
+      font-family: var(--heading);
+      font-size: .88rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #344957;
+      font-size: .83rem;
+      font-weight: 700;
+    }
+
+    .required {
+      color: var(--accent);
+    }
+
+    .helper-text {
+      color: var(--muted);
+      font-size: .73rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d8e2e6;
+      border-radius: 10px;
+      outline: none;
+      background: var(--field);
+      color: var(--ink);
+      font: 400 .9rem var(--body);
+      transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #a1adb5;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    input:not(:placeholder-shown):valid,
+    textarea:not(:placeholder-shown):valid {
+      border-color: var(--good);
+      background: var(--good-bg);
+    }
+
+    input:not(:placeholder-shown):invalid,
+    textarea:not(:placeholder-shown):invalid {
+      border-color: var(--bad);
+      background: var(--bad-bg);
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .submit-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px 18px 15px 21px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      font: 700 .94rem var(--body);
+      box-shadow: 0 8px 18px rgba(8,127,140,.2);
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      background: var(--accent-dark);
+      box-shadow: 0 11px 22px rgba(8,127,140,.25);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-arrow {
+      display: grid;
+      place-items: center;
+      width: 29px;
+      height: 29px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.17);
+      font-size: 1.1rem;
+      transition: transform .2s ease;
+    }
+
+    .submit-btn:hover .submit-arrow {
+      transform: translateX(3px);
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 22px 14px;
+      }
+
+      .contact-shell {
+        grid-template-columns: 1fr;
+        max-width: 560px;
+      }
+
+      .intro-panel {
+        min-height: 280px;
+        padding: 30px;
+      }
+
+      .intro-copy {
+        margin: 42px 0 0;
+      }
+
+      .intro-copy h1 {
+        max-width: 460px;
+        font-size: 2.35rem;
+      }
+
+      .side-note {
+        margin-top: 28px;
+      }
+
+      .form-panel {
+        padding: 34px 28px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .form-panel {
+        padding: 28px 18px;
+      }
+
+      fieldset {
+        padding: 17px 13px 3px;
+      }
+
+      .intro-panel {
+        padding: 26px 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="contact-shell">
+
+    <section class="intro-panel" aria-label="Contact introduction">
+
+      <div class="brand-mark">
+        <span class="brand-icon" aria-hidden="true">↗</span>
+        <span>Personal Portfolio</span>
+      </div>
+
+      <div class="intro-copy">
+        <span class="eyebrow">Get in touch</span>
+        <h1>Have something in mind?</h1>
+        <p>
+          Questions, fresh ideas, or a project to discuss?
+          Send a message and I'll get back to you as soon as I can.
+        </p>
+      </div>
+
+      <div class="side-note">
+        Good conversations start with a simple hello.
+      </div>
+
+    </section>
+
+    <section class="form-panel">
+
+      <header class="form-heading">
+        <span class="step">Contact form</span>
+        <h2>Send a message</h2>
+        <p>Fill out the details below. Fields marked with * are required.</p>
+      </header>
+
+      <form action="#" method="POST" autocomplete="on">
+
+        <fieldset>
+          <legend>Your details</legend>
+
+          <div class="form-group">
+            <label for="fullName">
+              Full name <span class="required">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="e.g. Maya Lin"
+              required
+              minlength="2"
+              maxlength="50"
+              autocomplete="name"
+            >
+
+            <span class="helper-text">
+              Enter between 2 and 50 characters.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="userEmail">
+              Email address <span class="required">*</span>
+            </label>
+
+            <input
+              type="email"
+              id="userEmail"
+              name="userEmail"
+              placeholder="maya@example.com"
+              required
+              pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+              autocomplete="email"
+            >
+
+            <span class="helper-text">
+              Use a valid email address so I can reply.
+            </span>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Message details</legend>
+
+          <div class="form-group">
+            <label for="subject">
+              Subject <span class="required">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              placeholder="What would you like to discuss?"
+              required
+              minlength="4"
+              maxlength="100"
+            >
+
+            <span class="helper-text">
+              A short summary of your inquiry.
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label for="message">
+              Your message <span class="required">*</span>
+            </label>
+
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Write your message here..."
+              required
+              minlength="20"
+              maxlength="1500"
+            ></textarea>
+
+            <span class="helper-text">
+              Please write at least 20 characters.
+            </span>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="submit-btn">
+          <span>Send message</span>
+          <span class="submit-arrow" aria-hidden="true">→</span>
+        </button>
+
+      </form>
+    </section>
+
+  </main>
+</body>
+</html>
+```
