@@ -1,1 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 5 | Literary Hub</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f4f1eb;
+      --white: #fff;
+      --dark: #24352e;
+      --green: #416b55;
+      --green-light: #e5eee7;
+      --orange: #c77a45;
+      --text: #343b35;
+      --muted: #858b83;
+      --border: #e5e2db;
+      --shadow: 0 8px 25px rgba(36, 53, 46, 0.07);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navigation */
+
+    nav {
+      background: var(--white);
+      padding: 17px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Merriweather', serif;
+      font-size: 1.35rem;
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .navigation-links {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .navigation-links a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .navigation-links a:hover {
+      color: var(--green);
+    }
+
+    /* Hero */
+
+    .hero {
+      text-align: center;
+      padding: 55px 20px 35px;
+    }
+
+    .hero-label {
+      display: inline-block;
+      padding: 7px 15px;
+      background: var(--green-light);
+      color: var(--green);
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-family: 'Merriweather', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--dark);
+      margin-bottom: 13px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Main */
+
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1150px;
+      padding: 15px 22px 50px;
+      margin: auto;
+    }
+
+    .search-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .search-title {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .search-title h2 {
+      font-family: 'Merriweather', serif;
+      color: var(--dark);
+      font-size: 1.55rem;
+      margin-bottom: 8px;
+    }
+
+    .search-title p {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    /* Search Form */
+
+    .search-form {
+      max-width: 680px;
+      display: flex;
+      gap: 10px;
+      margin: auto;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 17px;
+      border: 1px solid var(--border);
+      background: #fafaf8;
+      border-radius: 9px;
+      outline: none;
+      color: var(--text);
+      font: inherit;
+      transition: 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(65, 107, 85, 0.12);
+    }
+
+    .search-btn {
+      padding: 13px 25px;
+      border: none;
+      border-radius: 9px;
+      background: var(--green);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .search-btn:hover:not(:disabled) {
+      background: var(--dark);
+      transform: translateY(-2px);
+    }
+
+    .search-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .search-hint {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Results */
+
+    .results-heading {
+      margin: 35px 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .results-heading h2 {
+      font-family: 'Merriweather', serif;
+      color: var(--dark);
+      font-size: 1.35rem;
+    }
+
+    #resultsMeta {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* Book Grid */
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+      gap: 20px;
+    }
+
+    .book-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .cover-section {
+      height: 265px;
+      background: #eae9e2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .cover-section img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 12px;
+      transition: transform 0.3s;
+    }
+
+    .book-card:hover .cover-section img {
+      transform: scale(1.04);
+    }
+
+    .cover-placeholder {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .cover-placeholder span {
+      display: block;
+      font-size: 3rem;
+      margin-bottom: 8px;
+    }
+
+    .book-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 17px;
+    }
+
+    .book-title {
+      font-family: 'Merriweather', serif;
+      color: var(--dark);
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 9px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-author {
+      color: var(--green);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-metadata {
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      font-size: 0.77rem;
+    }
+
+    .metadata-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .metadata-label {
+      color: var(--muted);
+    }
+
+    .metadata-value {
+      color: var(--dark);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* Status Messages */
+
+    .status-panel {
+      min-height: 230px;
+      padding: 35px 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      color: var(--muted);
+    }
+
+    .status-icon {
+      font-size: 2.8rem;
+    }
+
+    .status-panel h3 {
+      font-family: 'Merriweather', serif;
+      color: var(--dark);
+      font-size: 1.25rem;
+    }
+
+    .status-panel p {
+      max-width: 430px;
+      font-size: 0.88rem;
+    }
+
+    .error-state h3 {
+      color: #bd5555;
+    }
+
+    /* Loading */
+
+    .spinner {
+      height: 38px;
+      width: 38px;
+      border: 4px solid #e3eae3;
+      border-top-color: var(--green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Footer */
+
+    footer {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 22px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* Mobile */
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .hero {
+        padding: 40px 15px 25px;
+      }
+
+      .search-panel {
+        padding: 20px 15px;
+      }
+
+      .search-form {
+        flex-direction: column;
+      }
+
+      .search-btn {
+        width: 100%;
+      }
+
+      .book-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .cover-section {
+        height: 190px;
+      }
+
+      .book-info {
+        padding: 12px;
+      }
+
+      .book-title {
+        font-size: 0.88rem;
+      }
+
+      .results-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .book-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="logo">Literary Hub.</div>
+
+    <div class="navigation-links">
+      <a href="../index.html">Web Programming</a>
+      &nbsp; / &nbsp;
+      <a href="index.html">Week 7</a>
+      &nbsp; / &nbsp;
+      Task 5
+    </div>
+  </nav>
+
+  <header class="hero">
+    <span class="hero-label">THE WORLD OF BOOKS</span>
+    <h1>Explore the Library</h1>
+    <p>Discover books, their authors, covers and publication history.</p>
+  </header>
+
+  <main>
+    <section class="search-panel">
+
+      <div class="search-title">
+        <h2>Find a Book</h2>
+        <p>Search by title and explore the available information.</p>
+      </div>
+
+      <form class="search-form" id="searchForm">
+        <input
+          type="search"
+          id="query"
+          class="search-input"
+          placeholder="Enter a book title..."
+          aria-label="Book title"
+          autocomplete="off"
+        >
+
+        <button type="submit" id="searchButton" class="search-btn">
+          Search Library
+        </button>
+      </form>
+
+      <p class="search-hint">
+        Search powered by the Open Library database.
+      </p>
+
+      <div class="results-heading">
+        <h2>Book Collection</h2>
+        <span id="resultsMeta"></span>
+      </div>
+
+      <div id="results" aria-live="polite">
+        <div class="status-panel">
+          <span class="status-icon">📚</span>
+          <h3>Welcome, Book Lover!</h3>
+          <p>Enter a title above to discover books and their details.</p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    Literary Hub &nbsp; | &nbsp; Powered by Open Library
+  </footer>
+
+  <script>
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('query');
+    const button = document.getElementById('searchButton');
+    const results = document.getElementById('results');
+    const resultsMeta = document.getElementById('resultsMeta');
+
+    let activeController = null;
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      searchBooks();
+    });
+
+    // Display different status messages
+    function showStatus(icon, heading, description, isError = false) {
+      const panel = document.createElement('div');
+      panel.className = 'status-panel';
+
+      if (isError) {
+        panel.classList.add('error-state');
+      }
+
+      const symbol = document.createElement('span');
+      symbol.className = 'status-icon';
+      symbol.textContent = icon;
+
+      const title = document.createElement('h3');
+      title.textContent = heading;
+
+      const message = document.createElement('p');
+      message.textContent = description;
+
+      panel.append(symbol, title, message);
+      results.replaceChildren(panel);
+    }
+
+    // Show the loading animation
+    function showLoading(term) {
+      const panel = document.createElement('div');
+      panel.className = 'status-panel';
+
+      const spinner = document.createElement('div');
+      spinner.className = 'spinner';
+
+      const message = document.createElement('p');
+      message.textContent = `Finding books for "${term}"...`;
+
+      panel.append(spinner, message);
+      results.replaceChildren(panel);
+    }
+
+    // Main search function
+    async function searchBooks() {
+      const term = input.value.trim();
+
+      if (!term) {
+        resultsMeta.textContent = '';
+
+        showStatus(
+          '✏️',
+          'Search field is empty',
+          'Please enter a book title before searching.'
+        );
+
+        input.focus();
+        return;
+      }
+
+      // Cancel the previous request if necessary
+      if (activeController) {
+        activeController.abort();
+      }
+
+      const controller = new AbortController();
+      activeController = controller;
+
+      button.disabled = true;
+      button.textContent = 'Searching...';
+
+      resultsMeta.textContent = 'Loading library...';
+      showLoading(term);
+
+      try {
+        const url =
+          'https://openlibrary.org/search.json?title=' +
+          encodeURIComponent(term) +
+          '&limit=12';
+
+        const response = await fetch(url, {
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Ignore outdated requests
+        if (activeController !== controller) {
+          return;
+        }
+
+        const books = data.docs || [];
+
+        // No results found
+        if (books.length === 0) {
+          resultsMeta.textContent = '0 books found';
+
+          showStatus(
+            '📖',
+            'No Books Found',
+            'We could not find a matching title. Try another search.'
+          );
+
+          return;
+        }
+
+        resultsMeta.textContent =
+          `Showing ${books.length} of ${(data.numFound || 0).toLocaleString()} books`;
+
+        displayBooks(books);
+
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          return;
+        }
+
+        console.error('Search error:', error);
+
+        if (activeController !== controller) {
+          return;
+        }
+
+        resultsMeta.textContent = '';
+
+        showStatus(
+          '⚠️',
+          'Something Went Wrong',
+          'Unable to retrieve books. Please check your internet connection and try again.',
+          true
+        );
+
+      } finally {
+        if (activeController === controller) {
+          activeController = null;
+          button.disabled = false;
+          button.textContent = 'Search Library';
+        }
+      }
+    }
+
+    // Create a placeholder for unavailable covers
+    function createPlaceholder() {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'cover-placeholder';
+
+      const icon = document.createElement('span');
+      icon.textContent = '📕';
+
+      const label = document.createElement('p');
+      label.textContent = 'Cover not available';
+
+      placeholder.append(icon, label);
+
+      return placeholder;
+    }
+
+    // Display the returned books
+    function displayBooks(books) {
+      const grid = document.createElement('div');
+      grid.className = 'book-grid';
+
+      books.forEach(book => {
+        const card = document.createElement('article');
+        card.className = 'book-card';
+
+        const title = book.title || 'Untitled';
+
+        const authors = book.author_name || ['Not listed'];
+        const visibleAuthors = authors.slice(0, 3).join(', ');
+
+        const extraAuthors = authors.length > 3
+          ? ` (+${authors.length - 3} more)`
+          : '';
+
+        const authorText = visibleAuthors + extraAuthors;
+
+        const year = book.first_publish_year
+          ? book.first_publish_year
+          : 'Not available';
+
+        const editionCount = book.edition_count
+          ? book.edition_count
+          : 'Not available';
+
+        // Cover area
+        const coverArea = document.createElement('div');
+        coverArea.className = 'cover-section';
+
+        if (book.cover_i) {
+          const image = document.createElement('img');
+
+          image.src =
+            `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`;
+
+          image.alt = `${title} book cover`;
+          image.loading = 'lazy';
+
+          image.addEventListener('error', function() {
+            coverArea.replaceChildren(createPlaceholder());
+          });
+
+          coverArea.appendChild(image);
+
+        } else {
+          coverArea.appendChild(createPlaceholder());
+        }
+
+        // Book information
+        const information = document.createElement('div');
+        information.className = 'book-info';
+
+        const heading = document.createElement('h3');
+        heading.className = 'book-title';
+        heading.textContent = title;
+        heading.title = title;
+
+        const author = document.createElement('p');
+        author.className = 'book-author';
+        author.textContent = `Author(s): ${authorText}`;
+
+        const metadata = document.createElement('div');
+        metadata.className = 'book-metadata';
+
+        const yearRow = createMetadataRow(
+          'First Published',
+          year
+        );
+
+        const editionRow = createMetadataRow(
+          'Editions',
+          editionCount
+        );
+
+        metadata.append(yearRow, editionRow);
+
+        information.append(heading, author, metadata);
+        card.append(coverArea, information);
+
+        grid.appendChild(card);
+      });
+
+      results.replaceChildren(grid);
+    }
+
+    // Build a metadata row
+    function createMetadataRow(labelText, valueText) {
+      const row = document.createElement('div');
+      row.className = 'metadata-row';
+
+      const label = document.createElement('span');
+      label.className = 'metadata-label';
+      label.textContent = labelText;
+
+      const value = document.createElement('span');
+      value.className = 'metadata-value';
+      value.textContent = valueText;
+
+      row.append(label, value);
+
+      return row;
+    }
+  </script>
+
+</body>
+</html>
