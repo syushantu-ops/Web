@@ -1,1 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 7 | Library Explorer</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --background: #f4f5ef;
+      --surface: #ffffff;
+      --primary: #315c49;
+      --primary-dark: #244535;
+      --secondary: #dce9df;
+      --text: #24332b;
+      --muted: #78847c;
+      --border: #e1e7df;
+      --danger: #c34d4d;
+      --shadow: 0 12px 35px rgba(35, 65, 47, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--background);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    .navigation {
+      padding: 15px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--primary);
+      letter-spacing: 0.3px;
+    }
+
+    .navigation a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .navigation a:hover {
+      color: var(--primary);
+    }
+
+    .back-link {
+      padding: 7px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    /* Introduction */
+    .hero {
+      text-align: center;
+      padding: 55px 20px 30px;
+    }
+
+    .hero-label {
+      display: inline-block;
+      padding: 5px 13px;
+      border-radius: 30px;
+      background: var(--secondary);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* Main section */
+    main {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 20px 24px 50px;
+      flex: 1;
+    }
+
+    .library-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .section-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      margin-top: 5px;
+      font-size: 0.92rem;
+    }
+
+    /* Search area */
+    .search-area {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .search-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 17px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fafbf8;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(49, 92, 73, 0.12);
+    }
+
+    .search-input.invalid {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(195, 77, 77, 0.1);
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-3px); }
+    }
+
+    .search-btn {
+      padding: 13px 25px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .search-btn:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .search-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .feedback {
+      min-height: 24px;
+      text-align: center;
+      margin-top: 9px;
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    .feedback.error {
+      color: var(--danger);
+    }
+
+    /* Results heading */
+    .results-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 35px 0 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+    }
+
+    .result-count {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* Book grid */
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+      gap: 22px;
+    }
+
+    .book-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .cover-area {
+      height: 255px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #edf1eb;
+      overflow: hidden;
+    }
+
+    .cover-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 12px;
+      transition: transform 0.3s;
+    }
+
+    .book-card:hover .cover-image {
+      transform: scale(1.04);
+    }
+
+    .no-cover {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: #849389;
+      background: linear-gradient(145deg, #e8eee7, #dce6dc);
+      font-size: 0.85rem;
+    }
+
+    .no-cover span {
+      font-size: 3rem;
+    }
+
+    .book-info {
+      padding: 17px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .book-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.08rem;
+      line-height: 1.4;
+      color: var(--primary-dark);
+      margin-bottom: 7px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .book-author {
+      color: var(--primary);
+      font-size: 0.84rem;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .subjects {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .subject-tag {
+      padding: 4px 8px;
+      border-radius: 5px;
+      background: var(--secondary);
+      color: var(--primary-dark);
+      font-size: 0.7rem;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .book-meta {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: auto;
+      display: grid;
+      gap: 7px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.78rem;
+    }
+
+    .meta-label {
+      color: var(--muted);
+    }
+
+    .meta-value {
+      color: var(--text);
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .book-link {
+      display: block;
+      margin-top: 14px;
+      padding: 9px;
+      border-radius: 7px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--primary);
+      border: 1px solid var(--secondary);
+      background: #f7faf6;
+      font-size: 0.8rem;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+
+    .book-link:hover {
+      color: white;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Status messages */
+    .status-box {
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      color: var(--muted);
+      padding: 30px 15px;
+    }
+
+    .status-icon {
+      font-size: 2.8rem;
+    }
+
+    .status-box h3 {
+      font-family: 'Playfair Display', serif;
+      color: var(--primary-dark);
+      font-size: 1.3rem;
+    }
+
+    .status-box p {
+      font-size: 0.9rem;
+      max-width: 430px;
+    }
+
+    .status-box.error h3 {
+      color: var(--danger);
+    }
+
+    .loader {
+      width: 38px;
+      height: 38px;
+      border: 4px solid var(--secondary);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: rotate 0.8s linear infinite;
+    }
+
+    @keyframes rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Footer */
+    footer {
+      padding: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      background: #fff;
+    }
+
+    @media (max-width: 620px) {
+      .navigation {
+        padding: 13px 5%;
+      }
+
+      .hero {
+        padding-top: 38px;
+      }
+
+      main {
+        padding: 15px;
+      }
+
+      .library-panel {
+        padding: 20px 15px;
+      }
+
+      .search-form {
+        flex-direction: column;
+      }
+
+      .search-btn {
+        width: 100%;
+      }
+
+      .results-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 13px;
+      }
+
+      .cover-area {
+        height: 220px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .book-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cover-area {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navigation">
+    <div class="brand">📚 Leaf & Letter</div>
+    <a class="back-link" href="index.html">← Week 7</a>
+  </nav>
+
+  <header class="hero">
+    <span class="hero-label">Web Programming · Task 06</span>
+    <h1>Explore the World of Books</h1>
+    <p>Find your next great read with our online book collection.</p>
+  </header>
+
+  <main>
+    <section class="library-panel">
+
+      <div class="section-heading">
+        <h2>Discover a Book</h2>
+        <p>Search by title, author, or keyword using Open Library.</p>
+      </div>
+
+      <div class="search-area">
+        <form class="search-form" id="searchForm" novalidate>
+          <input
+            type="search"
+            id="query"
+            class="search-input"
+            placeholder="What would you like to read?"
+            aria-label="Search for books"
+            aria-describedby="feedback"
+            autocomplete="off"
+          >
+
+          <button type="submit" class="search-btn" id="searchButton">
+            Find Books
+          </button>
+        </form>
+
+        <p class="feedback" id="feedback">
+          Enter at least two characters to begin.
+        </p>
+      </div>
+
+      <div class="results-heading">
+        <h2>Search Collection</h2>
+        <span class="result-count" id="resultCount"></span>
+      </div>
+
+      <div id="results" aria-live="polite">
+        <div class="status-box">
+          <span class="status-icon">🔎</span>
+          <h3>Your next read awaits</h3>
+          <p>Use the search box above to discover books from around the world.</p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    Leaf & Letter · A Book Discovery Project
+  </footer>
+
+  <script>
+    // DOM elements
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('query');
+    const searchButton = document.getElementById('searchButton');
+    const feedback = document.getElementById('feedback');
+    const results = document.getElementById('results');
+    const resultCount = document.getElementById('resultCount');
+
+    let currentController = null;
+
+    // Update the feedback message
+    function updateFeedback(message, error = false) {
+      feedback.textContent = message;
+      feedback.classList.toggle('error', error);
+    }
+
+    // Create a status message
+    function showStatus(icon, heading, message, error = false) {
+      const box = document.createElement('div');
+      box.className = error ? 'status-box error' : 'status-box';
+
+      const symbol = document.createElement('span');
+      symbol.className = 'status-icon';
+      symbol.textContent = icon;
+
+      const title = document.createElement('h3');
+      title.textContent = heading;
+
+      const description = document.createElement('p');
+      description.textContent = message;
+
+      box.append(symbol, title, description);
+      results.replaceChildren(box);
+    }
+
+    // Loading indicator
+    function showLoading(term) {
+      const box = document.createElement('div');
+      box.className = 'status-box';
+
+      const spinner = document.createElement('div');
+      spinner.className = 'loader';
+
+      const title = document.createElement('h3');
+      title.textContent = 'Searching the library...';
+
+      const description = document.createElement('p');
+      description.textContent = `Finding books related to "${term}"`;
+
+      box.append(spinner, title, description);
+      results.replaceChildren(box);
+    }
+
+    // Display a book cover or fallback
+    function createCover(book) {
+      const container = document.createElement('div');
+      container.className = 'cover-area';
+
+      function placeholder() {
+        const fallback = document.createElement('div');
+        fallback.className = 'no-cover';
+
+        const icon = document.createElement('span');
+        icon.textContent = '📖';
+
+        const label = document.createElement('p');
+        label.textContent = 'Cover unavailable';
+
+        fallback.append(icon, label);
+        return fallback;
+      }
+
+      if (!book.cover_i) {
+        container.appendChild(placeholder());
+        return container;
+      }
+
+      const image = document.createElement('img');
+      image.className = 'cover-image';
+      image.src = `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`;
+      image.alt = `Cover of ${book.title || 'book'}`;
+      image.loading = 'lazy';
+
+      image.addEventListener('error', () => {
+        image.replaceWith(placeholder());
+      }, { once: true });
+
+      container.appendChild(image);
+      return container;
+    }
+
+    // Add metadata to a book card
+    function addMetaRow(parent, label, value) {
+      const row = document.createElement('div');
+      row.className = 'meta-row';
+
+      const name = document.createElement('span');
+      name.className = 'meta-label';
+      name.textContent = label;
+
+      const content = document.createElement('span');
+      content.className = 'meta-value';
+      content.textContent = value;
+
+      row.append(name, content);
+      parent.appendChild(row);
+    }
+
+    // Create one book card
+    function createBookCard(book) {
+      const card = document.createElement('article');
+      card.className = 'book-card';
+
+      const title = book.title || 'Untitled';
+      const authors = Array.isArray(book.author_name)
+        ? book.author_name
+        : [];
+
+      const authorText = authors.length
+        ? authors.slice(0, 3).join(', ') +
+          (authors.length > 3 ? ` (+${authors.length - 3} more)` : '')
+        : 'Author not listed';
+
+      const year = book.first_publish_year
+        ? String(book.first_publish_year)
+        : 'Not available';
+
+      const editions = book.edition_count
+        ? String(book.edition_count)
+        : 'Not available';
+
+      // Cover
+      const cover = createCover(book);
+
+      // Book information
+      const info = document.createElement('div');
+      info.className = 'book-info';
+
+      const heading = document.createElement('h3');
+      heading.className = 'book-title';
+      heading.textContent = title;
+      heading.title = title;
+
+      const author = document.createElement('p');
+      author.className = 'book-author';
+      author.textContent = `By ${authorText}`;
+
+      info.append(heading, author);
+
+      // Subject tags
+      const subjects = Array.isArray(book.subject)
+        ? book.subject.slice(0, 2)
+        : [];
+
+      if (subjects.length) {
+        const tagContainer = document.createElement('div');
+        tagContainer.className = 'subjects';
+
+        subjects.forEach(subject => {
+          const tag = document.createElement('span');
+          tag.className = 'subject-tag';
+          tag.textContent = subject;
+          tagContainer.appendChild(tag);
+        });
+
+        info.appendChild(tagContainer);
+      }
+
+      // Publication details
+      const metadata = document.createElement('div');
+      metadata.className = 'book-meta';
+
+      addMetaRow(metadata, 'First published', year);
+      addMetaRow(metadata, 'Editions', editions);
+
+      info.appendChild(metadata);
+
+      // Open Library link
+      const link = document.createElement('a');
+      link.className = 'book-link';
+
+      link.href = book.key
+        ? `https://openlibrary.org${book.key}`
+        : `https://openlibrary.org/search?q=${encodeURIComponent(title)}`;
+
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'Explore this book ↗';
+
+      info.appendChild(link);
+
+      card.append(cover, info);
+      return card;
+    }
+
+    // Render search results
+    function renderBooks(books, total) {
+      const grid = document.createElement('div');
+      grid.className = 'book-grid';
+
+      books.forEach(book => {
+        grid.appendChild(createBookCard(book));
+      });
+
+      results.replaceChildren(grid);
+
+      resultCount.textContent =
+        `Showing ${books.length} of ${Number(total || books.length).toLocaleString()} results`;
+    }
+
+    // Search Open Library
+    async function searchLibrary() {
+      const term = input.value.trim();
+
+      // Validate input
+      if (term.length < 2) {
+        input.classList.add('invalid');
+        input.setAttribute('aria-invalid', 'true');
+
+        updateFeedback('Please enter at least 2 characters.', true);
+        resultCount.textContent = '';
+
+        showStatus(
+          '✏️',
+          'Search term too short',
+          'Please enter at least two characters before searching.'
+        );
+
+        input.focus();
+        return;
+      }
+
+      input.classList.remove('invalid');
+      input.removeAttribute('aria-invalid');
+
+      // Cancel the previous request
+      if (currentController) {
+        currentController.abort();
+      }
+
+      const controller = new AbortController();
+      currentController = controller;
+
+      searchButton.disabled = true;
+      searchButton.textContent = 'Searching...';
+
+      updateFeedback('Connecting to Open Library...');
+      resultCount.textContent = 'Loading results...';
+
+      showLoading(term);
+
+      try {
+        const endpoint =
+          `https://openlibrary.org/search.json?title=${encodeURIComponent(term)}&limit=12`;
+
+        const response = await fetch(endpoint, {
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Ignore results from an outdated request
+        if (currentController !== controller) return;
+
+        const books = Array.isArray(data.docs) ? data.docs : [];
+
+        // Handle empty results
+        if (books.length === 0) {
+          resultCount.textContent = '0 books found';
+
+          updateFeedback('No matching books were found.');
+
+          showStatus(
+            '📚',
+            'No books found',
+            'Try another title or use a different keyword.'
+          );
+
+          return;
+        }
+
+        // Display successful results
+        renderBooks(books, data.numFound);
+
+        updateFeedback(`Successfully found ${books.length} books.`);
+
+      } catch (error) {
+        if (error.name === 'AbortError') return;
+
+        if (currentController !== controller) return;
+
+        console.error('Book search error:', error);
+
+        resultCount.textContent = '';
+
+        updateFeedback('Unable to connect to the library.', true);
+
+        showStatus(
+          '⚠️',
+          'Something went wrong',
+          'Books could not be loaded. Check your internet connection and try again.',
+          true
+        );
+
+      } finally {
+        // Only the latest request may update the button
+        if (currentController === controller) {
+          searchButton.disabled = false;
+          searchButton.textContent = 'Find Books';
+          currentController = null;
+        }
+      }
+    }
+
+    // Form submission
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      searchLibrary();
+    });
+
+    // Real-time input feedback
+    input.addEventListener('input', () => {
+      const value = input.value.trim();
+
+      if (!value) {
+        input.classList.remove('invalid');
+        input.removeAttribute('aria-invalid');
+        updateFeedback('Enter at least two characters to begin.');
+      } else if (value.length < 2) {
+        updateFeedback('Keep typing — at least 2 characters are required.');
+      } else {
+        input.classList.remove('invalid');
+        input.removeAttribute('aria-invalid');
+        updateFeedback('Press Enter or click Find Books to search.');
+      }
+    });
+  </script>
+
+</body>
+</html>
