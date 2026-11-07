@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal | Registration</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --primary-light: #ccfbf1;
+      --background: #f1f5f4;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #dce5e3;
+      --success: #059669;
+      --danger: #dc2626;
+      --code-bg: #172c35;
+      --radius: 14px;
+      --shadow: 0 12px 35px rgba(15, 50, 45, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 40px 18px;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .brand-icon {
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 15px;
+      display: grid;
+      place-items: center;
+      background: var(--primary);
+      color: white;
+      border-radius: 19px;
+      font-size: 30px;
+      box-shadow: 0 8px 20px rgba(15, 118, 110, 0.22);
+    }
+
+    .page-header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 2.7rem);
+      font-weight: 700;
+      color: #153b38;
+      letter-spacing: -1.5px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* Main form */
+    .registration-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 25px;
+      background: #fcfefd;
+      min-width: 0;
+    }
+
+    legend {
+      padding: 0 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary-dark);
+    }
+
+    .section-description {
+      color: var(--muted);
+      font-size: 0.83rem;
+      margin: -5px 0 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      color: #334155;
+      font-size: 0.86rem;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    .required {
+      color: var(--danger);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #cbd5d3;
+      border-radius: 9px;
+      outline: none;
+      background: white;
+      color: var(--text);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    .form-control:not(:placeholder-shown):invalid {
+      border-color: var(--danger);
+      background: #fff8f8;
+      box-shadow: 0 0 0 1px var(--danger);
+    }
+
+    .form-control:not(:placeholder-shown):valid {
+      border-color: var(--success);
+      background: #f5fffa;
+    }
+
+    select.form-control:invalid {
+      color: #94a3b8;
+    }
+
+    .field-note {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 6px;
+    }
+
+    /* Experience section */
+    .experience-section {
+      background: linear-gradient(145deg, #f0fdfa, #f8fafc);
+      border-color: #b8ded7;
+    }
+
+    .experience-section legend {
+      color: var(--primary-dark);
+    }
+
+    .rank-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 17px;
+      border-radius: 12px;
+      border: 1px solid #cce7e1;
+      background: white;
+      margin-bottom: 25px;
+    }
+
+    .small-label {
+      font-size: 0.69rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .rank-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-top: 4px;
+    }
+
+    .rank-level {
+      color: var(--primary);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .rank-icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: var(--primary-light);
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .experience-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .experience-heading label {
+      margin: 0;
+    }
+
+    .year-badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #ccfbf1;
+      color: #115e59;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .slider-wrapper {
+      position: relative;
+      padding-top: 32px;
+      margin: 12px 0 8px;
+    }
+
+    .slider-tooltip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-50%);
+      background: var(--primary-dark);
+      color: white;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .slider-track {
+      position: absolute;
+      height: 8px;
+      left: 0;
+      right: 0;
+      top: 42px;
+      background: #dce8e5;
+      border-radius: 20px;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .slider-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #0f766e, #2dd4bf);
+      border-radius: 20px;
+    }
+
+    input[type="range"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+      position: relative;
+      z-index: 2;
+      cursor: pointer;
+      margin: 0;
+      height: 28px;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 8px;
+      background: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 4px solid white;
+      box-shadow: 0 2px 8px rgba(15, 118, 110, 0.4);
+      margin-top: -7px;
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 8px;
+      background: transparent;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 4px solid white;
+      box-shadow: 0 2px 8px rgba(15, 118, 110, 0.4);
+    }
+
+    input[type="range"]:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 5px;
+      border-radius: 10px;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      margin-top: 5px;
+    }
+
+    /* Skills */
+    .skills-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 27px 0 12px;
+      gap: 10px;
+    }
+
+    .skills-header h3 {
+      font-size: 0.77rem;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .unlocked-counter {
+      color: var(--primary);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+    }
+
+    .skill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #f1f5f4;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .skill-dot {
+      width: 8px;
+      height: 8px;
+      background: #cbd5e1;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .skill.active {
+      background: #ccfbf1;
+      border-color: #7dd3c7;
+      color: #115e59;
+    }
+
+    .skill.active .skill-dot {
+      background: #059669;
+      box-shadow: 0 0 6px rgba(5, 150, 105, 0.35);
+    }
+
+    /* Terminal */
+    .terminal {
+      background: var(--code-bg);
+      color: #d8e7e6;
+      border-radius: 11px;
+      padding: 15px;
+      margin-top: 25px;
+      overflow: hidden;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .terminal-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-bottom: 11px;
+      border-bottom: 1px solid #30464e;
+      margin-bottom: 12px;
+    }
+
+    .terminal-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .terminal-title {
+      margin-left: 8px;
+      color: #9aafb4;
+      font-size: 0.65rem;
+    }
+
+    .terminal pre {
+      font-size: 0.72rem;
+      line-height: 1.9;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .code-purple { color: #c4b5fd; }
+    .code-blue { color: #7dd3fc; }
+    .code-yellow { color: #fcd34d; }
+    .code-green { color: #6ee7b7; }
+
+    /* Terms */
+    .terms-box {
+      padding: 17px;
+      border: 1px solid var(--border);
+      background: #f8faf9;
+      border-radius: 11px;
+      margin-bottom: 22px;
+    }
+
+    .terms-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+    }
+
+    .terms-content input {
+      width: 17px;
+      height: 17px;
+      margin-top: 3px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .terms-content label {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .terms-content p {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 5px;
+      font-weight: 400;
+    }
+
+    /* Submit button */
+    .submit-button {
+      width: 100%;
+      border: none;
+      padding: 15px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 0.96rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 6px 15px rgba(15, 118, 110, 0.2);
+    }
+
+    .submit-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .submit-button:active {
+      transform: scale(0.99);
+    }
+
+    /* Confirmation modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.65);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.2s;
+    }
+
+    .modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: white;
+      width: 100%;
+      max-width: 430px;
+      border-radius: 18px;
+      padding: 30px;
+      text-align: center;
+      transform: translateY(15px);
+      transition: 0.2s;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-overlay.visible .modal-card {
+      transform: translateY(0);
+    }
+
+    .success-icon {
+      width: 65px;
+      height: 65px;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      background: #d1fae5;
+      display: grid;
+      place-items: center;
+      font-size: 30px;
+    }
+
+    .modal-card h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      color: #153b38;
+      margin-bottom: 10px;
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      width: 100%;
+      border: none;
+      padding: 12px;
+      border-radius: 9px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      background: var(--primary-dark);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      padding: 25px 10px 5px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 25px 12px;
+      }
+
+      .registration-card {
+        padding: 18px 13px;
+      }
+
+      fieldset {
+        padding: 17px 13px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .field.full-width {
+        grid-column: auto;
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .rank-card {
+        align-items: flex-start;
+      }
+
+      .rank-name {
+        font-size: 0.94rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header class="page-header">
+      <div class="brand-icon">🎓</div>
+      <span class="eyebrow">Student Portal · Enrollment</span>
+      <h1>Join the Developer Program</h1>
+      <p>Build your academic profile and explore your coding journey.</p>
+    </header>
+
+    <form
+      id="registrationForm"
+      action="/api/register"
+      method="post"
+      class="registration-card"
+    >
+
+      <!-- PERSONAL INFORMATION -->
+      <fieldset>
+        <legend>01 — Personal Information</legend>
+        <p class="section-description">
+          Tell us a little about yourself.
+        </p>
+
+        <div class="form-grid">
+
+          <div class="field full-width">
+            <label for="fullName">
+              Full Name <span class="required">*</span>
+            </label>
+
+            <input
+              class="form-control"
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Enter your full name"
+              required
+              autocomplete="name"
+            >
+
+            <p class="field-note">
+              Use your official name as shown in academic records.
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="studentId">
+              Student ID <span class="required">*</span>
+            </label>
+
+            <input
+              class="form-control"
+              type="text"
+              id="studentId"
+              name="studentId"
+              placeholder="123456789"
+              pattern="[0-9]{9}"
+              maxlength="9"
+              title="Enter exactly 9 digits."
+              required
+              inputmode="numeric"
+            >
+
+            <p class="field-note">Exactly 9 numeric digits.</p>
+          </div>
+
+          <div class="field">
+            <label for="dob">Date of Birth</label>
+
+            <input
+              class="form-control"
+              type="date"
+              id="dob"
+              name="dob"
+            >
+
+            <p class="field-note">Optional information.</p>
+          </div>
+
+          <div class="field full-width">
+            <label for="major">
+              Intended Major <span class="required">*</span>
+            </label>
+
+            <select
+              class="form-control"
+              id="major"
+              name="major"
+              required
+            >
+              <option value="" disabled selected>
+                Choose your academic major
+              </option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Data Science & AI">Data Science & AI</option>
+              <option value="Software Engineering">Software Engineering</option>
+              <option value="Information Systems">Information Systems</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+            </select>
+          </div>
+
+        </div>
+      </fieldset>
+
+      <!-- ACCOUNT INFORMATION -->
+      <fieldset>
+        <legend>02 — Account Information</legend>
+        <p class="section-description">
+          Set up your account and contact information.
+        </p>
+
+        <div class="form-grid">
+
+          <div class="field full-width">
+            <label for="email">
+              Campus Email <span class="required">*</span>
+            </label>
+
+            <input
+              class="form-control"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="student@university.edu"
+              required
+              autocomplete="email"
+            >
+
+            <p class="field-note">
+              Enter a valid email address.
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="password">
+              Account Password <span class="required">*</span>
+            </label>
+
+            <input
+              class="form-control"
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Minimum 8 characters"
+              minlength="8"
+              required
+              autocomplete="new-password"
+            >
+
+            <p class="field-note">
+              Password must contain at least 8 characters.
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone Number</label>
+
+            <input
+              class="form-control"
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="123-4567-8901"
+              pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"
+              title="Use the format 123-4567-8901."
+              autocomplete="tel"
+            >
+
+            <p class="field-note">
+              Format: 123-4567-8901
+            </p>
+          </div>
+
+        </div>
+      </fieldset>
+
+      <!-- CODING EXPERIENCE -->
+      <fieldset class="experience-section">
+        <legend>03 — Coding Experience</legend>
+
+        <p class="section-description">
+          Customize your developer profile based on your experience.
+        </p>
+
+        <div class="rank-card">
+          <div>
+            <span class="small-label">Current Developer Rank</span>
+            <div class="rank-name" id="rankTitle">
+              Hello World Novice 🌱
+            </div>
+            <div class="rank-level" id="rankLevel">
+              LEVEL 0 · 0 YEARS
+            </div>
+          </div>
+
+          <div class="rank-icon" id="rankBadgeIcon">🌱</div>
+        </div>
+
+        <div class="experience-heading">
+          <label for="experience">Years of Coding Experience</label>
+
+          <span class="year-badge" id="expTextBadge">
+            0 Years
+          </span>
+        </div>
+
+        <div class="slider-wrapper" id="sliderContainer">
+          <div class="slider-tooltip" id="sliderBubble">0 yrs</div>
+
+          <div class="slider-track">
+            <div class="slider-fill" id="sliderProgressFill"></div>
+          </div>
+
+          <input
+            type="range"
+            id="experience"
+            name="experience"
+            min="0"
+            max="10"
+            step="1"
+            value="0"
+            aria-label="Years of coding experience"
+          >
+        </div>
+
+        <div class="slider-labels">
+          <span>0 · Beginner</span>
+          <span>5 · Intermediate</span>
+          <span>10 · Expert</span>
+        </div>
+
+        <!-- SKILL BADGES -->
+        <div class="skills-header">
+          <h3>Developer Skill Tree</h3>
+          <span class="unlocked-counter" id="unlockedCount">
+            1 / 6 Unlocked
+          </span>
+        </div>
+
+        <div class="skills-grid">
+
+          <div class="skill active" id="perk-0">
+            <span class="skill-dot"></span>
+            HTML5 & Markdown
+          </div>
+
+          <div class="skill" id="perk-1">
+            <span class="skill-dot"></span>
+            JavaScript & Git
+          </div>
+
+          <div class="skill" id="perk-3">
+            <span class="skill-dot"></span>
+            Fullstack Frameworks
+          </div>
+
+          <div class="skill" id="perk-5">
+            <span class="skill-dot"></span>
+            Cloud Services
+          </div>
+
+          <div class="skill" id="perk-8">
+            <span class="skill-dot"></span>
+            System Architecture
+          </div>
+
+          <div class="skill" id="perk-10">
+            <span class="skill-dot"></span>
+            Team Mastery
+          </div>
+
+        </div>
+
+        <!-- LIVE CODE PREVIEW -->
+        <div class="terminal">
+
+          <div class="terminal-top">
+            <span class="terminal-dot" style="background:#fb7185"></span>
+            <span class="terminal-dot" style="background:#fbbf24"></span>
+            <span class="terminal-dot" style="background:#34d399"></span>
+            <span class="terminal-title">developer-profile.js</span>
+          </div>
+
+          <pre><span class="code-purple">const</span> <span class="code-blue">developer</span> = {
+  experience: <span class="code-yellow" id="termExp">0</span>,
+  rank: <span class="code-green" id="termRank">"Hello World Novice 🌱"</span>,
+  activity: <span class="code-green" id="termStatus">"Writing first console.log()"</span>
+};</pre>
+
+        </div>
+
+      </fieldset>
+
+      <!-- TERMS -->
+      <div class="terms-box">
+        <div class="terms-content">
+
+          <input
+            type="checkbox"
+            id="terms"
+            name="terms"
+            required
+          >
+
+          <div>
+            <label for="terms">
+              I agree to the terms and conditions
+              <span class="required">*</span>
+            </label>
+
+            <p>
+              I confirm that the information provided is accurate and
+              agree to follow academic honesty policies and course guidelines.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <button type="submit" class="submit-button">
+        Complete Registration →
+      </button>
+
+    </form>
+
+    <footer>
+      Student Portal · Developer Registration System
+    </footer>
+
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div
+    class="modal-overlay"
+    id="feedbackModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+    aria-hidden="true"
+  >
+    <div class="modal-card">
+
+      <div class="success-icon">✓</div>
+
+      <h2 id="modalTitle">Registration Successful!</h2>
+
+      <p id="submissionDetails"></p>
+
+      <button type="button" class="modal-close" id="closeModal">
+        Return to Form
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    // Developer ranking configuration
+    const ranks = [
+      {
+        min: 0,
+        max: 0,
+        title: "Hello World Novice 🌱",
+        icon: "🌱",
+        status: "Writing first console.log()"
+      },
+      {
+        min: 1,
+        max: 2,
+        title: "Script Kiddie & Bug Hunter 🐛",
+        icon: "🐛",
+        status: "Squashing bugs and learning regex"
+      },
+      {
+        min: 3,
+        max: 4,
+        title: "Code Craftsman ⚡",
+        icon: "⚡",
+        status: "Refactoring and building micro-apps"
+      },
+      {
+        min: 5,
+        max: 7,
+        title: "Full-Stack Sorcerer 🧙",
+        icon: "🧙",
+        status: "Deploying production pipelines"
+      },
+      {
+        min: 8,
+        max: 9,
+        title: "Architecture Alchemist 🔮",
+        icon: "🔮",
+        status: "Designing distributed systems"
+      },
+      {
+        min: 10,
+        max: 10,
+        title: "10x Legendary Tech Lead 👑",
+        icon: "👑",
+        status: "Guiding future engineers"
+      }
+    ];
+
+    // Skill unlock requirements
+    const perks = [
+      { id: "perk-0", requirement: 0 },
+      { id: "perk-1", requirement: 1 },
+      { id: "perk-3", requirement: 3 },
+      { id: "perk-5", requirement: 5 },
+      { id: "perk-8", requirement: 8 },
+      { id: "perk-10", requirement: 10 }
+    ];
+
+    // DOM references
+    const experienceSlider = document.getElementById("experience");
+    const rankTitle = document.getElementById("rankTitle");
+    const rankLevel = document.getElementById("rankLevel");
+    const rankIcon = document.getElementById("rankBadgeIcon");
+
+    const yearBadge = document.getElementById("expTextBadge");
+    const tooltip = document.getElementById("sliderBubble");
+    const progressFill = document.getElementById("sliderProgressFill");
+
+    const terminalExperience = document.getElementById("termExp");
+    const terminalRank = document.getElementById("termRank");
+    const terminalStatus = document.getElementById("termStatus");
+
+    const unlockedCount = document.getElementById("unlockedCount");
+
+    // Update the slider tooltip position
+    function positionTooltip(value) {
+      const percentage = value / 10;
+      const sliderWidth = experienceSlider.getBoundingClientRect().width;
+      const thumbSize = 23;
+
+      const position =
+        thumbSize / 2 +
+        percentage * (sliderWidth - thumbSize);
+
+      tooltip.style.left = `${position}px`;
+    }
+
+    // Update all experience-related components
+    function updateExperience(value) {
+      const years = Number(value);
+
+      const currentRank = ranks.find(rank =>
+        years >= rank.min && years <= rank.max
+      ) || ranks[0];
+
+      // Rank information
+      rankTitle.textContent = currentRank.title;
+      rankLevel.textContent = `LEVEL ${years} · ${years} YEARS`;
+      rankIcon.textContent = currentRank.icon;
+
+      // Experience labels
+      yearBadge.textContent =
+        `${years} ${years === 1 ? "Year" : "Years"}`;
+
+      tooltip.textContent = `${years} yrs`;
+
+      // Progress indicator
+      const percentage = (years / 10) * 100;
+      progressFill.style.width = `${percentage}%`;
+
+      positionTooltip(years);
+
+      // Terminal preview
+      terminalExperience.textContent = years;
+      terminalRank.textContent = `"${currentRank.title}"`;
+      terminalStatus.textContent = `"${currentRank.status}"`;
+
+      // Unlock skills
+      let totalUnlocked = 0;
+
+      perks.forEach(perk => {
+        const element = document.getElementById(perk.id);
+        const unlocked = years >= perk.requirement;
+
+        element.classList.toggle("active", unlocked);
+
+        if (unlocked) {
+          totalUnlocked++;
+        }
+      });
+
+      unlockedCount.textContent =
+        `${totalUnlocked} / ${perks.length} Unlocked`;
+    }
+
+    // Listen for slider changes
+    experienceSlider.addEventListener("input", event => {
+      updateExperience(event.target.value);
+    });
+
+    // Keep tooltip correctly positioned when screen size changes
+    window.addEventListener("resize", () => {
+      positionTooltip(experienceSlider.value);
+    });
+
+    // Registration form
+    const registrationForm =
+      document.getElementById("registrationForm");
+
+    const modal =
+      document.getElementById("feedbackModal");
+
+    const submissionDetails =
+      document.getElementById("submissionDetails");
+
+    const closeModal =
+      document.getElementById("closeModal");
+
+    // Helper for safely adding summary lines
+    function addSummaryLine(parent, label, value) {
+      const line = document.createElement("div");
+      const strong = document.createElement("strong");
+
+      strong.textContent = label + ": ";
+
+      const text = document.createTextNode(value);
+
+      line.append(strong, text);
+      parent.appendChild(line);
+    }
+
+    // Display registration summary
+    registrationForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      // Browser validation runs before this event because
+      // the form uses native HTML5 validation.
+      if (!registrationForm.checkValidity()) {
+        registrationForm.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(registrationForm);
+
+      const studentName = formData.get("fullName");
+      const studentId = formData.get("studentId");
+      const major = formData.get("major");
+      const experience = formData.get("experience");
+
+      const currentRank = ranks.find(rank =>
+        Number(experience) >= rank.min &&
+        Number(experience) <= rank.max
+      );
+
+      // Build summary without inserting user input as HTML
+      const summary = document.createDocumentFragment();
+
+      const welcome = document.createElement("p");
+      welcome.textContent =
+        `Welcome to the program, ${studentName}!`;
+
+      summary.appendChild(welcome);
+
+      addSummaryLine(summary, "Student ID", studentId);
+      addSummaryLine(summary, "Major", major);
+      addSummaryLine(
+        summary,
+        "Developer Rank",
+        currentRank.title
+      );
+      addSummaryLine(
+        summary,
+        "Experience",
+        `${experience} years`
+      );
+
+      const note = document.createElement("p");
+      note.style.fontSize = "0.75rem";
+      note.style.marginTop = "12px";
+      note.textContent =
+        "All required HTML5 validation checks have passed.";
+
+      summary.appendChild(note);
+
+      submissionDetails.replaceChildren(summary);
+
+      // Open modal
+      modal.classList.add("visible");
+      modal.setAttribute("aria-hidden", "false");
+
+      closeModal.focus();
+    });
+
+    // Close modal
+    function hideModal() {
+      modal.classList.remove("visible");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    closeModal.addEventListener("click", () => {
+      hideModal();
+    });
+
+    // Close modal when clicking outside the card
+    modal.addEventListener("click", event => {
+      if (event.target === modal) {
+        hideModal();
+      }
+    });
+
+    // Close modal with Escape
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && modal.classList.contains("visible")) {
+        hideModal();
+      }
+    });
+
+    // Initialize experience interface
+    document.addEventListener("DOMContentLoaded", () => {
+      updateExperience(experienceSlider.value);
+    });
+
+    // Initialize immediately as well
+    updateExperience(experienceSlider.value);
+  </script>
+
+</body>
+</html>
