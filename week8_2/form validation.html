@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Academy | Form Validation</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f5f4;
+      color: #263b3a;
+      min-height: 100vh;
+      padding: 45px 18px;
+    }
+
+    main {
+      max-width: 680px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 35px rgba(32, 75, 67, 0.09);
+    }
+
+    .header {
+      background: #174c46;
+      padding: 32px;
+      color: white;
+    }
+
+    .tag {
+      display: inline-block;
+      color: #a7f3d0;
+      background: rgba(255,255,255,0.12);
+      padding: 7px 13px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 17px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #d1e7df;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    .intro {
+      font-size: 14px;
+      line-height: 1.8;
+      color: #647976;
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #174c46;
+    }
+
+    .field {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #284541;
+    }
+
+    .hint {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: #82938f;
+      margin-top: 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1.5px solid #d5e1dd;
+      border-radius: 9px;
+      background: #f9fcfb;
+      font-size: 14px;
+      color: #263b3a;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: #168b78;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(22,139,120,0.1);
+    }
+
+    input::placeholder {
+      color: #a5b4b0;
+    }
+
+    .info {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px;
+      background: #eff8f5;
+      border-left: 4px solid #239b81;
+      border-radius: 7px;
+      font-size: 12px;
+      color: #50756b;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #168b78;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    button:hover {
+      background: #116e60;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(22,139,120,0.2);
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 25px;
+      color: #168b78;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .back:hover {
+      color: #174c46;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 17px;
+      border-top: 1px solid #edf2ef;
+      color: #91a19c;
+      font-size: 11px;
+    }
+
+    @media(max-width: 500px) {
+      .header {
+        padding: 25px;
+      }
+
+      .content {
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+
+    <header class="header">
+      <div class="tag">MODULE 04 · HTML5</div>
+      <h1>Form Validation Rules</h1>
+      <p>
+        Learn how HTML5 checks user input automatically
+        before allowing a form to be submitted.
+      </p>
+    </header>
+
+    <section class="content">
+
+      <p class="intro">
+        HTML5 includes built-in validation attributes.
+        These rules help ensure that users enter information
+        in the correct format without requiring JavaScript.
+      </p>
+
+      <h2 class="section-title">Practice Validation</h2>
+
+      <form>
+
+        <div class="field">
+          <label for="name">
+            Full Name
+            <span class="hint">Required field · Minimum 3 characters</span>
+          </label>
+
+          <input
+            type="text"
+            id="name"
+            required
+            minlength="3"
+            placeholder="Enter your full name"
+          >
+        </div>
+
+        <div class="field">
+          <label for="sid">
+            Student Identification
+            <span class="hint">Must contain exactly 9 digits</span>
+          </label>
+
+          <input
+            type="text"
+            id="sid"
+            required
+            pattern="\d{9}"
+            placeholder="Example: 202112345"
+            title="Student ID must be exactly 9 digits"
+          >
+        </div>
+
+        <div class="field">
+          <label for="grade">
+            Course Score
+            <span class="hint">Allowed range: 0 to 100</span>
+          </label>
+
+          <input
+            type="number"
+            id="grade"
+            min="0"
+            max="100"
+            placeholder="Enter score (0 - 100)"
+          >
+        </div>
+
+        <div class="info">
+          <span>ⓘ</span>
+          <span>
+            Try submitting incomplete information or entering
+            values outside the permitted range to see the
+            browser's built-in validation messages.
+          </span>
+        </div>
+
+        <button type="submit">
+          Check My Input →
+        </button>
+
+      </form>
+
+      <a href="index.html" class="back">
+        ← Return to Main Index
+      </a>
+
+    </section>
+
+    <footer class="footer">
+      HTML Learning Portal · Module 04
+    </footer>
+
+  </main>
+
+</body>
+</html>
