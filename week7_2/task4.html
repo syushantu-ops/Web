@@ -1,1 +1,756 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 4 | PageTurn Book Explorer</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --background: #f5f3ef;
+      --paper: #ffffff;
+      --ink: #292c28;
+      --muted: #777d73;
+      --accent: #d46b43;
+      --accent-dark: #b95330;
+      --border: #e8e5de;
+      --soft: #f0ede6;
+      --success: #52785b;
+      --danger: #b94d4d;
+      --radius: 16px;
+      --shadow: 0 8px 28px rgba(40, 42, 35, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--background);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 7%;
+      background: var(--paper);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .breadcrumb a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--accent);
+    }
+
+    /* Header */
+
+    .intro {
+      text-align: center;
+      padding: 55px 20px 35px;
+    }
+
+    .intro .tag {
+      display: inline-block;
+      padding: 6px 14px;
+      margin-bottom: 15px;
+      border-radius: 30px;
+      background: #f4e4db;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .intro h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .intro p {
+      max-width: 560px;
+      margin: auto;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* Main Content */
+
+    main {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 15px 22px 50px;
+      flex: 1;
+    }
+
+    .search-container {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .search-heading {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .search-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      margin-bottom: 5px;
+    }
+
+    .search-heading p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* Search Form */
+
+    .search-form {
+      display: flex;
+      max-width: 680px;
+      margin: 0 auto;
+      gap: 10px;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      padding: 14px 17px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: #faf9f6;
+      color: var(--ink);
+      font: inherit;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212, 107, 67, 0.12);
+    }
+
+    .search-btn {
+      padding: 13px 25px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .search-btn:hover:not(:disabled) {
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+    }
+
+    .search-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .search-note {
+      text-align: center;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* Results Section */
+
+    .results-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 35px 0 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+    }
+
+    #resultsMeta {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* Book Grid */
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 20px;
+    }
+
+    .book-card {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .cover-area {
+      height: 235px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--soft);
+    }
+
+    .cover-area img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 12px;
+      transition: transform 0.3s;
+    }
+
+    .book-card:hover .cover-area img {
+      transform: scale(1.04);
+    }
+
+    .no-cover {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .no-cover span {
+      display: block;
+      font-size: 2.8rem;
+      margin-bottom: 5px;
+    }
+
+    .book-details {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: 17px;
+    }
+
+    .book-details h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.08rem;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .author {
+      color: var(--success);
+      font-size: 0.84rem;
+      margin-bottom: 16px;
+    }
+
+    .book-information {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    /* Status Messages */
+
+    .message-box {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 35px 15px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .message-icon {
+      font-size: 2.7rem;
+    }
+
+    .message-box h3 {
+      color: var(--ink);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+    }
+
+    .message-box p {
+      max-width: 430px;
+      font-size: 0.9rem;
+    }
+
+    .error-message h3 {
+      color: var(--danger);
+    }
+
+    /* Loading Animation */
+
+    .loader {
+      width: 38px;
+      height: 38px;
+      border: 4px solid #f0ded5;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: rotate 0.8s linear infinite;
+    }
+
+    @keyframes rotate {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Footer */
+
+    footer {
+      margin-top: auto;
+      padding: 22px;
+      text-align: center;
+      background: var(--paper);
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    /* Responsive Layout */
+
+    @media (max-width: 600px) {
+      .navbar {
+        padding: 14px 5%;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      .intro {
+        padding: 40px 18px 25px;
+      }
+
+      .search-container {
+        padding: 20px 15px;
+      }
+
+      .search-form {
+        flex-direction: column;
+      }
+
+      .search-btn {
+        width: 100%;
+      }
+
+      .results-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .book-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .cover-area {
+        height: 180px;
+      }
+
+      .book-details {
+        padding: 12px;
+      }
+
+      .book-details h3 {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .book-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="brand">PageTurn.</div>
+
+    <div class="breadcrumb">
+      <a href="../index.html">Web Programming</a>
+      &nbsp; / &nbsp;
+      <a href="index.html">Week 7</a>
+      &nbsp; / &nbsp;
+      Task 4
+    </div>
+  </nav>
+
+  <header class="intro">
+    <span class="tag">Your Reading Corner</span>
+    <h1>Find Your Next Great Read</h1>
+    <p>
+      Explore thousands of books from around the world.
+      Search by title and discover something new.
+    </p>
+  </header>
+
+  <main>
+    <section class="search-container">
+
+      <div class="search-heading">
+        <h2>Explore the Library</h2>
+        <p>Enter a book title to find matching publications.</p>
+      </div>
+
+      <form class="search-form" id="searchForm">
+        <input
+          type="search"
+          id="query"
+          class="search-input"
+          placeholder="e.g. The Great Gatsby"
+          aria-label="Enter a book title"
+          autocomplete="off"
+        >
+
+        <button type="submit" id="searchButton" class="search-btn">
+          Find Books
+        </button>
+      </form>
+
+      <p class="search-note">
+        Search results are provided by the Open Library API.
+      </p>
+
+      <div class="results-heading">
+        <h2>Discoveries</h2>
+        <span id="resultsMeta"></span>
+      </div>
+
+      <div id="results" aria-live="polite">
+        <div class="message-box">
+          <span class="message-icon">📚</span>
+          <h3>Ready to explore?</h3>
+          <p>Type a book title above and your search results will appear here.</p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    PageTurn Book Explorer &nbsp; | &nbsp; Powered by Open Library
+  </footer>
+
+  <script>
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('query');
+    const searchButton = document.getElementById('searchButton');
+    const resultsArea = document.getElementById('results');
+    const resultsMeta = document.getElementById('resultsMeta');
+
+    let activeController = null;
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      searchBooks();
+    });
+
+    // Display a message inside the results section
+    function showMessage(icon, heading, description, isError = false) {
+      const box = document.createElement('div');
+      box.className = 'message-box';
+
+      if (isError) {
+        box.classList.add('error-message');
+      }
+
+      const symbol = document.createElement('span');
+      symbol.className = 'message-icon';
+      symbol.textContent = icon;
+
+      const title = document.createElement('h3');
+      title.textContent = heading;
+
+      const paragraph = document.createElement('p');
+      paragraph.textContent = description;
+
+      box.append(symbol, title, paragraph);
+      resultsArea.replaceChildren(box);
+    }
+
+    // Display loading animation
+    function showLoading(searchTerm) {
+      const box = document.createElement('div');
+      box.className = 'message-box';
+
+      const spinner = document.createElement('div');
+      spinner.className = 'loader';
+
+      const message = document.createElement('p');
+      message.textContent = `Searching for "${searchTerm}"...`;
+
+      box.append(spinner, message);
+      resultsArea.replaceChildren(box);
+    }
+
+    // Search for books using Open Library
+    async function searchBooks() {
+      const searchTerm = input.value.trim();
+
+      if (!searchTerm) {
+        resultsMeta.textContent = '';
+        showMessage(
+          '✏️',
+          'Nothing to search yet',
+          'Please enter a book title before starting your search.'
+        );
+
+        input.focus();
+        return;
+      }
+
+      // Cancel any previous search request
+      if (activeController) {
+        activeController.abort();
+      }
+
+      const controller = new AbortController();
+      activeController = controller;
+
+      searchButton.disabled = true;
+      searchButton.textContent = 'Searching...';
+
+      resultsMeta.textContent = 'Connecting to library...';
+      showLoading(searchTerm);
+
+      try {
+        const apiURL =
+          'https://openlibrary.org/search.json?title=' +
+          encodeURIComponent(searchTerm) +
+          '&limit=10';
+
+        const response = await fetch(apiURL, {
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Ignore results if a newer search has started
+        if (activeController !== controller) {
+          return;
+        }
+
+        const books = data.docs || [];
+
+        // Handle searches with no matching books
+        if (books.length === 0) {
+          resultsMeta.textContent = '0 books found';
+
+          showMessage(
+            '📖',
+            'No matching books',
+            'We could not find a book with that title. Try another search.'
+          );
+
+          return;
+        }
+
+        resultsMeta.textContent =
+          `Showing ${books.length} of ${(data.numFound || 0).toLocaleString()} books`;
+
+        displayBooks(books);
+
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          return;
+        }
+
+        console.error('Book search error:', error);
+
+        if (activeController !== controller) {
+          return;
+        }
+
+        resultsMeta.textContent = '';
+
+        showMessage(
+          '⚠️',
+          'Unable to load books',
+          'Something went wrong while connecting to the library. Please check your internet connection and try again.',
+          true
+        );
+
+      } finally {
+        // Only the latest request should restore the button
+        if (activeController === controller) {
+          searchButton.disabled = false;
+          searchButton.textContent = 'Find Books';
+          activeController = null;
+        }
+      }
+    }
+
+    // Create and display book cards
+    function displayBooks(books) {
+      const grid = document.createElement('div');
+      grid.className = 'book-grid';
+
+      books.forEach(book => {
+        const card = document.createElement('article');
+        card.className = 'book-card';
+
+        const title = book.title || 'Untitled Book';
+
+        const authorList = book.author_name || ['Unknown author'];
+        const visibleAuthors = authorList.slice(0, 3).join(', ');
+
+        const extraAuthors = authorList.length > 3
+          ? ` (+${authorList.length - 3} more)`
+          : '';
+
+        const authorText = visibleAuthors + extraAuthors;
+
+        const year = book.first_publish_year
+          ? `Published: ${book.first_publish_year}`
+          : 'Year unavailable';
+
+        const editions = book.edition_count
+          ? `${book.edition_count} editions`
+          : 'Editions N/A';
+
+        // Book cover section
+        const cover = document.createElement('div');
+        cover.className = 'cover-area';
+
+        if (book.cover_i) {
+          const image = document.createElement('img');
+
+          image.src =
+            `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`;
+
+          image.alt = `${title} cover`;
+          image.loading = 'lazy';
+
+          image.addEventListener('error', function() {
+            cover.replaceChildren(createPlaceholder());
+          });
+
+          cover.appendChild(image);
+
+        } else {
+          cover.appendChild(createPlaceholder());
+        }
+
+        // Book information section
+        const details = document.createElement('div');
+        details.className = 'book-details';
+
+        const bookTitle = document.createElement('h3');
+        bookTitle.textContent = title;
+        bookTitle.title = title;
+
+        const author = document.createElement('p');
+        author.className = 'author';
+        author.textContent = `By ${authorText}`;
+
+        const information = document.createElement('div');
+        information.className = 'book-information';
+
+        const publishDate = document.createElement('span');
+        publishDate.textContent = year;
+
+        const editionCount = document.createElement('span');
+        editionCount.textContent = editions;
+
+        information.append(publishDate, editionCount);
+
+        details.append(bookTitle, author, information);
+        card.append(cover, details);
+
+        grid.appendChild(card);
+      });
+
+      resultsArea.replaceChildren(grid);
+    }
+
+    // Generate a placeholder when a book cover is unavailable
+    function createPlaceholder() {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'no-cover';
+
+      const icon = document.createElement('span');
+      icon.textContent = '📘';
+
+      const text = document.createElement('p');
+      text.textContent = 'Cover unavailable';
+
+      placeholder.append(icon, text);
+
+      return placeholder;
+    }
+  </script>
+
+</body>
+</html>
