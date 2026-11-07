@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Learning | Form Element</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #101426;
+      color: #e5e7eb;
+      min-height: 100vh;
+      padding: 45px 18px;
+    }
+
+    main {
+      max-width: 680px;
+      margin: auto;
+      background: #1b2238;
+      border: 1px solid #303955;
+      border-radius: 18px;
+      padding: 35px;
+      box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+    }
+
+    .tag {
+      display: inline-block;
+      background: #332b60;
+      color: #c4b5fd;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 29px;
+      color: #ffffff;
+      margin-bottom: 15px;
+    }
+
+    h1 span {
+      color: #a78bfa;
+    }
+
+    .description {
+      color: #aab3c8;
+      line-height: 1.8;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    .code-heading {
+      color: #c4b5fd;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    pre {
+      background: #0c1020;
+      border: 1px solid #343b56;
+      color: #93c5fd;
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    .demo-section {
+      background: #242d47;
+      padding: 24px;
+      border-radius: 14px;
+      border: 1px solid #394461;
+    }
+
+    .demo-section h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+
+    .demo-section p {
+      color: #aab3c8;
+      font-size: 13px;
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 9px;
+      color: #dbe4f5;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 15px;
+      background: #151c30;
+      color: white;
+      border: 1px solid #46516f;
+      border-radius: 9px;
+      outline: none;
+      font-size: 14px;
+      transition: 0.25s;
+    }
+
+    input:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(120deg, #7c3aed, #6366f1);
+      color: white;
+      border: none;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(124,58,237,0.3);
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 28px;
+      color: #b8a5ff;
+      text-decoration: none;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .back:hover {
+      color: white;
+      padding-left: 5px;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #78839e;
+      font-size: 12px;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 500px) {
+      main {
+        padding: 23px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      pre {
+        font-size: 11px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <div class="tag">HTML FUNDAMENTALS · LESSON 02</div>
+
+    <h1>Understanding the <span>Form Element</span></h1>
+
+    <p class="description">
+      HTML forms provide a way to collect information from users
+      and send it to a server. Two important attributes control
+      where and how the submitted information is delivered.
+    </p>
+
+    <div class="code-heading">CODE EXAMPLE / FORM STRUCTURE</div>
+
+    <pre><code>&lt;!-- Define form submission settings --&gt;
+&lt;form action="/submit" method="POST"&gt;
+
+  &lt;input name="username"&gt;
+
+&lt;/form&gt;</code></pre>
+
+    <section class="demo-section">
+      <h2>Try It Yourself</h2>
+
+      <p>
+        Enter a username below and submit the form.
+        The GET method will attach the entered value
+        to the page URL.
+      </p>
+
+      <form action="topic_02_the_form_element.html" method="GET">
+
+        <div class="field">
+          <label for="user">YOUR USERNAME</label>
+
+          <input
+            type="text"
+            id="user"
+            name="username"
+            placeholder="Enter your username..."
+          >
+        </div>
+
+        <button type="submit">
+          Send GET Request →
+        </button>
+
+      </form>
+    </section>
+
+    <a class="back" href="index.html">
+      ← Return to Course Index
+    </a>
+
+    <div class="footer-note">
+      Interactive HTML Learning Module
+    </div>
+
+  </main>
+</body>
+</html>
