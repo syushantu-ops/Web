@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Basics | Understanding HTML Forms</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f5ef;
+      color: #34332f;
+      min-height: 100vh;
+      padding: 45px 18px;
+    }
+
+    main {
+      max-width: 700px;
+      margin: auto;
+      background: #fffefa;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 35px rgba(70, 55, 35, 0.08);
+      border: 1px solid #eee7da;
+    }
+
+    .header {
+      padding: 35px;
+      background: #282a35;
+      color: white;
+    }
+
+    .eyebrow {
+      color: #ffb86b;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    h1 span {
+      color: #ffb86b;
+    }
+
+    .header p {
+      color: #d1d1d5;
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 520px;
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    .section-label {
+      color: #c16a27;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      margin-bottom: 12px;
+    }
+
+    .description {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #69675f;
+      margin-bottom: 22px;
+    }
+
+    .purpose-card {
+      background: #fff4e7;
+      border: 1px solid #f6dfc3;
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 28px;
+    }
+
+    .purpose-card h2 {
+      color: #9e571e;
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    .purpose-card p {
+      color: #756451;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .feature {
+      background: #fffefa;
+      border: 1px solid #eadfce;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #565148;
+    }
+
+    .feature span {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 7px;
+    }
+
+    .demo {
+      border: 1px solid #e9e3d9;
+      border-radius: 13px;
+      padding: 23px;
+      background: #ffffff;
+    }
+
+    .demo h2 {
+      font-size: 19px;
+      margin-bottom: 7px;
+      color: #34332f;
+    }
+
+    .demo > p {
+      font-size: 13px;
+      color: #89857b;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 9px;
+      color: #4d4a42;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #ddd5c8;
+      border-radius: 9px;
+      font-size: 14px;
+      background: #fffefa;
+      outline: none;
+      transition: 0.2s;
+      margin-bottom: 13px;
+    }
+
+    input[type="text"]:focus {
+      border-color: #e58b42;
+      box-shadow: 0 0 0 3px rgba(229,139,66,0.12);
+    }
+
+    button {
+      padding: 13px 22px;
+      background: #e58b42;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #c8732d;
+      transform: translateY(-2px);
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 25px;
+      text-decoration: none;
+      color: #bd702e;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .back:hover {
+      color: #824718;
+    }
+
+    .footer {
+      border-top: 1px solid #eee8de;
+      padding: 17px;
+      text-align: center;
+      color: #aaa398;
+      font-size: 11px;
+    }
+
+    @media(max-width: 500px) {
+      .header {
+        padding: 26px;
+      }
+
+      .content {
+        padding: 23px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .features {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .demo {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+
+    <header class="header">
+      <div class="eyebrow">WEB DEVELOPMENT / LESSON 01</div>
+
+      <h1>Why Do We Need <span>Forms?</span></h1>
+
+      <p>
+        Discover how websites communicate with visitors
+        by collecting information through simple HTML forms.
+      </p>
+    </header>
+
+    <section class="content">
+
+      <div class="section-label">INTRODUCTION</div>
+
+      <p class="description">
+        HTML forms act as a communication channel between
+        users and web applications. They allow visitors to
+        enter information, which can then be processed by
+        servers or client-side scripts.
+      </p>
+
+      <div class="purpose-card">
+
+        <h2>The Main Purpose of Forms</h2>
+
+        <p>
+          Forms transform user input into structured
+          information that a website can understand
+          and process.
+        </p>
+
+        <div class="features">
+
+          <div class="feature">
+            <span>🔐</span>
+            Login & Registration
+          </div>
+
+          <div class="feature">
+            <span>📨</span>
+            Data Submission
+          </div>
+
+          <div class="feature">
+            <span>🔎</span>
+            Search Queries
+          </div>
+
+          <div class="feature">
+            <span>📊</span>
+            Surveys & Filters
+          </div>
+
+        </div>
+      </div>
+
+      <div class="demo">
+
+        <h2>Try a Live Example</h2>
+
+        <p>
+          This simple form demonstrates how a search query
+          can be sent to an external website.
+        </p>
+
+        <form
+          action="https://www.google.com/search"
+          method="get"
+          target="_blank"
+        >
+
+          <label for="q">Enter Your Search Query</label>
+
+          <input
+            type="text"
+            id="q"
+            name="q"
+            placeholder="What would you like to search for?"
+          >
+
+          <button type="submit">
+            Search the Web →
+          </button>
+
+        </form>
+
+      </div>
+
+      <a href="index.html" class="back">
+        ← Back to Learning Dashboard
+      </a>
+
+    </section>
+
+    <footer class="footer">
+      WEB DEVELOPMENT BASICS · TOPIC 01
+    </footer>
+
+  </main>
+
+</body>
+</html>
