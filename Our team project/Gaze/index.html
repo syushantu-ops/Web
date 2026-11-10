@@ -1,1 +1,1700 @@
 
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gaze - The Finest Version</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ============ AUTH ============ -->
+  <div class="auth-container view active" id="auth-container">
+    <div class="auth-box" id="login-box">
+      <img src="Gaze_ logo.webp" alt="Gaze Logo" class="auth-logo" width="150" height="150">
+      <h2>Welcome to Gaze</h2>
+      <input type="email" id="login-email" placeholder="Email" autocomplete="email">
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+      <button id="login-btn" class="btn">Login</button>
+      <div class="auth-toggle" style="margin-top:1rem;">Don't have an account? <a id="show-signup">Sign Up</a></div>
+    </div>
+
+    <div class="auth-box hidden" id="signup-box">
+      <img src="Gaze_ logo.webp" alt="Gaze Logo" class="auth-logo" width="150" height="150">
+      <h2>Create Account</h2>
+      <input type="text" id="signup-name" placeholder="Name" maxlength="40" autocomplete="name">
+      <input type="email" id="signup-email" placeholder="Email" autocomplete="email">
+      <input type="password" id="signup-password" placeholder="Password (6+ characters)" autocomplete="new-password">
+      <button id="signup-btn" class="btn">Sign Up</button>
+      <div class="auth-toggle" style="margin-top:1rem;">Already have an account? <a id="show-login">Login</a></div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN APP ============ -->
+  <div class="app-view view" id="main-app-view">
+    <div class="header">
+      <div class="title-group">
+        <button id="profile-btn" class="icon-btn" style="padding:0;" title="Edit profile">
+          <div id="header-avatar" class="avatar small"></div>
+        </button>
+        <h3 id="main-title">Chats</h3>
+      </div>
+      <div class="actions" id="header-actions">
+        <button id="search-btn" class="icon-btn" title="Search chats"><i class="fas fa-search"></i></button>
+        <button id="notes-btn" class="icon-btn" title="Public notes"><i class="fas fa-sticky-note"></i></button>
+        <button id="new-group-btn" class="icon-btn" title="New group"><i class="fas fa-users"></i></button>
+      </div>
+    </div>
+
+    <!-- Chats -->
+    <div class="panel active" id="panel-chats">
+      <div class="search-bar hidden" id="chat-search-bar">
+        <input type="text" id="chat-search" class="text-input" placeholder="Search chats">
+      </div>
+      <div class="list-container" id="chat-list"></div>
+    </div>
+
+    <!-- People -->
+    <div class="panel" id="panel-people">
+      <div class="section hidden" id="requests-section">
+        <h4>Friend requests</h4>
+        <div id="requests-list"></div>
+      </div>
+      <div class="section">
+        <h4>Find people</h4>
+        <input type="text" id="people-search" class="text-input" placeholder="Search by name" style="margin-bottom:0.5rem;">
+        <div id="people-results"></div>
+      </div>
+      <div class="section">
+        <h4>Friends</h4>
+        <div id="friends-list"></div>
+      </div>
+    </div>
+
+    <!-- Menu -->
+    <div class="panel" id="panel-menu">
+      <div class="profile-card" id="profile-card"></div>
+      <button class="menu-row" id="menu-notes"><i class="fas fa-sticky-note"></i> Public notes</button>
+      <button class="menu-row" id="menu-notify"><i class="fas fa-bell"></i> Notifications <span class="state" id="notify-state"></span></button>
+      <button class="menu-row" id="menu-dark"><i class="fas fa-moon"></i> Dark mode <span class="state" id="dark-state"></span></button>
+      <button class="menu-row danger" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active" id="nav-chats"><i class="fas fa-comment"></i><span class="label">Chats</span><span class="badge hidden" id="chats-badge"></span></div>
+      <div class="nav-item" id="nav-people"><i class="fas fa-user-friends"></i><span class="label">People</span><span class="badge hidden" id="people-badge"></span></div>
+      <div class="nav-item" id="nav-menu"><i class="fas fa-bars"></i><span class="label">Menu</span></div>
+    </div>
+  </div>
+
+  <!-- ============ CHAT WINDOW ============ -->
+  <div class="chat-window view" id="chat-window">
+    <div class="header">
+      <div class="title-group">
+        <button id="back-btn" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+        <div id="chat-avatar" class="avatar small"></div>
+        <div class="title-text">
+          <h3 id="chat-title">Chat</h3>
+          <div class="subtitle" id="chat-subtitle"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="video-call-btn" class="icon-btn" title="Video call"><i class="fas fa-video"></i></button>
+        <button id="group-info-btn" class="icon-btn hidden" title="Group info"><i class="fas fa-info-circle"></i></button>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="typing" id="typing-indicator"></div>
+    <div class="edit-bar hidden" id="edit-bar"><span><i class="fas fa-pen"></i> Editing message</span><button id="cancel-edit-btn" title="Cancel"><i class="fas fa-times"></i></button></div>
+
+    <div class="chat-input">
+      <button id="attach-btn" class="attach" title="Send a photo"><i class="fas fa-image"></i></button>
+      <input type="file" id="image-input" accept="image/*" class="hidden">
+      <input type="text" id="message-input" placeholder="Aa" maxlength="2000" autocomplete="off">
+      <button id="send-btn" title="Send"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ OVERLAYS (outside .view so position:fixed works) ============ -->
+<div class="loader-overlay" id="loader"><div class="loader"></div></div>
+<div class="toast" id="toast"></div>
+<div class="image-viewer hidden" id="image-viewer"><img id="image-viewer-img" alt="Photo"></div>
+
+<!-- Incoming call -->
+<div id="incoming-call" class="call-screen incoming hidden">
+  <div class="incoming-card">
+    <div id="incoming-avatar" class="avatar big"></div>
+    <h2 id="incoming-name">Someone</h2>
+    <p>Incoming video call…</p>
+    <div class="incoming-actions">
+      <button id="incoming-decline" class="call-btn end" title="Decline"><i class="fas fa-phone-slash"></i></button>
+      <button id="incoming-accept" class="call-btn accept" title="Accept"><i class="fas fa-phone"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- Active call -->
+<div id="call-screen" class="call-screen hidden">
+  <video id="remoteVideo" autoplay playsinline></video>
+  <video id="localVideo" autoplay muted playsinline></video>
+  <div class="call-info">
+    <div id="call-peer-name"></div>
+    <div id="call-status"></div>
+  </div>
+  <div class="call-controls">
+    <button id="call-mic" class="call-btn" title="Mute"><i class="fas fa-microphone"></i></button>
+    <button id="call-cam" class="call-btn" title="Camera"><i class="fas fa-video"></i></button>
+    <button id="call-flip" class="call-btn" title="Flip camera"><i class="fas fa-sync-alt"></i></button>
+    <button id="call-end" class="call-btn end" title="End call"><i class="fas fa-phone-slash"></i></button>
+  </div>
+</div>
+
+<!-- Profile modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit profile</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div id="profile-preview" class="avatar big"></div>
+        <input type="file" id="profileImageInput" accept="image/*" class="form-control" style="margin-bottom:0.75rem;">
+        <input type="text" id="profileNameInput" class="form-control" placeholder="Your name" maxlength="40">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" id="saveProfileBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create group modal -->
+<div class="modal fade" id="createGroupModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New group</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="groupNameInput" class="form-control" placeholder="Group name" maxlength="50">
+        <div id="groupFriendsList" style="margin-top:1rem; max-height:40vh; overflow:auto;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="createGroupBtn">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Group info modal -->
+<div class="modal fade" id="groupInfoModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="groupInfoTitle">Group</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div id="groupInfoMembers"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="leaveGroupBtn">Leave group</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notes modal -->
+<div class="modal fade" id="notesModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Public notes <small style="color:var(--text-secondary)">(vanish after 24h)</small></h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="noteInput" class="form-control" placeholder="Write a note…" maxlength="200">
+        <button class="btn" id="postNoteBtn" style="margin-bottom:1rem;">Post note</button>
+        <div id="notesList" style="max-height:40vh; overflow:auto;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Message actions modal -->
+<div class="modal fade" id="actionsModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="emoji-row" id="emoji-row"></div>
+        <button class="btn btn-ghost" id="act-copy"><i class="fas fa-copy"></i> Copy text</button>
+        <button class="btn btn-ghost" id="act-edit"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn btn-danger" id="act-delete"><i class="fas fa-trash"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Libraries -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+/* =====================================================================
+   CONFIG
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyCIHseG35rioPhaHJNfszFJ7z-gA7dop64",
+  authDomain: "gaze-7f582.firebaseapp.com",
+  projectId: "gaze-7f582",
+  storageBucket: "gaze-7f582.firebasestorage.app",
+  messagingSenderId: "638067877135",
+  appId: "1:638067877135:web:52088efb0b774a5d8d0a7a",
+  measurementId: "G-YNVJC547VY"
+};
+
+/* Video calls. STUN alone fails on many mobile/corporate networks.
+   To make calls work everywhere, create a free TURN account (for example at
+   metered.ca), then paste the entries it gives you below, replacing the
+   example values. */
+const ICE_SERVERS = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' }
+  // , { urls: 'turn:YOUR_TURN_HOST:80', username: 'YOUR_USERNAME', credential: 'YOUR_CREDENTIAL' }
+  // , { urls: 'turn:YOUR_TURN_HOST:443?transport=tcp', username: 'YOUR_USERNAME', credential: 'YOUR_CREDENTIAL' }
+];
+
+const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+const $id = id => document.getElementById(id);
+const TS = () => firebase.database.ServerValue.TIMESTAMP;
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+function isImg(u) { return typeof u === 'string' && u.startsWith('data:image/'); }
+function setAvatar(a, name, url) {
+  if (isImg(url)) { a.style.backgroundImage = `url("${url}")`; a.textContent = ''; }
+  else { a.style.backgroundImage = ''; a.textContent = (name || '?').charAt(0).toUpperCase(); }
+}
+function makeAvatar(name, url, extraClass) {
+  const a = el('div', 'avatar' + (extraClass ? ' ' + extraClass : ''));
+  setAvatar(a, name, url);
+  return a;
+}
+function groupAvatar(extraClass) {
+  const a = el('div', 'avatar' + (extraClass ? ' ' + extraClass : ''));
+  a.innerHTML = '<i class="fas fa-users" style="font-size:0.55em"></i>';
+  return a;
+}
+const sameDay = (a, b) => a.toDateString() === b.toDateString();
+function fmtTime(ts) {
+  if (!ts) return '';
+  return new Date(ts).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+function fmtListTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts), n = new Date();
+  if (sameDay(d, n)) return fmtTime(ts);
+  if ((n - d) / 86400000 < 7) return d.toLocaleDateString([], { weekday: 'short' });
+  return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+function fmtDay(ts) {
+  const d = new Date(ts), n = new Date(), y = new Date(Date.now() - 86400000);
+  if (sameDay(d, n)) return 'Today';
+  if (sameDay(d, y)) return 'Yesterday';
+  return d.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
+}
+function fmtLastSeen(ts) {
+  if (!ts) return 'Offline';
+  const d = new Date(ts);
+  if (sameDay(d, new Date())) return 'Last seen ' + fmtTime(ts);
+  return 'Last seen ' + d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ' ' + fmtTime(ts);
+}
+
+/* Resize an image file to a JPEG data URL. square=true centre-crops. */
+function resizeImage(file, maxDim, quality, square) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const c = document.createElement('canvas');
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff';
+      if (square) {
+        const side = Math.min(img.width, img.height);
+        c.width = c.height = maxDim;
+        ctx.fillRect(0, 0, maxDim, maxDim);
+        ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, maxDim, maxDim);
+      } else {
+        const s = Math.min(1, maxDim / Math.max(img.width, img.height));
+        c.width = Math.round(img.width * s);
+        c.height = Math.round(img.height * s);
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+      }
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read that image.')); };
+    img.src = url;
+  });
+}
+async function resizeChatImage(file) {
+  const tries = [[900, 0.7], [640, 0.6], [480, 0.5]];
+  for (const [dim, q] of tries) {
+    const data = await resizeImage(file, dim, q, false);
+    if (data.length < 450000) return data;
+  }
+  throw new Error('That photo is too large to send.');
+}
+
+/* =====================================================================
+   APP
+   ===================================================================== */
+const app = {
+  me: null,
+  allUsers: {}, presence: {}, friends: {}, groups: {}, userGroups: {}, chatMeta: {}, requests: {},
+  sentRequests: new Set(),
+  listeners: [], groupRefs: {},
+  currentChat: null,
+  msgEls: {}, msgData: {}, reactions: {}, seenTs: 0, lastDay: null, initialLoaded: false,
+  editingMid: null, actionMid: null,
+  typingOn: false, typingTimer: null, typingRef: null,
+  metaLoaded: false, requestsLoaded: false, renderQueued: false,
+  signingUp: false, pendingAvatar: null, toastTimer: null, activeTab: 'chats',
+
+  /* ---------- startup ---------- */
+  init() {
+    firebase.initializeApp(firebaseConfig);
+    this.auth = firebase.auth();
+    this.db = firebase.database();
+    this.applyTheme(localStorage.getItem('gaze-theme') === 'dark');
+    this.updateNotifyLabel();
+    this.bindUI();
+    this.auth.onAuthStateChanged(u => this.onAuth(u));
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && this.currentChat) this.markRead();
+    });
+  },
+
+  bindUI() {
+    const on = (id, fn, evt) => $id(id).addEventListener(evt || 'click', fn);
+
+    // auth
+    on('show-signup', () => { $id('login-box').classList.add('hidden'); $id('signup-box').classList.remove('hidden'); });
+    on('show-login', () => { $id('signup-box').classList.add('hidden'); $id('login-box').classList.remove('hidden'); });
+    on('login-btn', () => this.login());
+    on('signup-btn', () => this.signUp());
+    ['login-email', 'login-password'].forEach(id => on(id, e => { if (e.key === 'Enter') this.login(); }, 'keydown'));
+    ['signup-name', 'signup-email', 'signup-password'].forEach(id => on(id, e => { if (e.key === 'Enter') this.signUp(); }, 'keydown'));
+
+    // navigation
+    on('nav-chats', () => this.switchTab('chats'));
+    on('nav-people', () => this.switchTab('people'));
+    on('nav-menu', () => this.switchTab('menu'));
+    on('search-btn', () => {
+      const bar = $id('chat-search-bar');
+      bar.classList.toggle('hidden');
+      if (!bar.classList.contains('hidden')) $id('chat-search').focus();
+      else { $id('chat-search').value = ''; this.scheduleRender(); }
+    });
+    on('chat-search', () => this.scheduleRender(), 'input');
+    on('people-search', () => this.renderPeople(), 'input');
+    on('new-group-btn', () => this.showCreateGroup());
+    on('notes-btn', () => this.openNotes());
+    on('menu-notes', () => this.openNotes());
+    on('menu-notify', () => this.enableNotifications());
+    on('menu-dark', () => this.applyTheme(document.documentElement.dataset.theme !== 'dark'));
+    on('logout-btn', () => this.logout());
+
+    // profile
+    on('profile-btn', () => this.openProfile());
+    on('profile-card', () => this.openProfile());
+    on('profileImageInput', async e => {
+      const f = e.target.files[0]; if (!f) return;
+      try { this.pendingAvatar = await resizeImage(f, 160, 0.8, true); setAvatar($id('profile-preview'), 'x', this.pendingAvatar); }
+      catch (err) { this.toast(err.message); }
+    }, 'change');
+    on('saveProfileBtn', () => this.saveProfile());
+
+    // groups
+    on('createGroupBtn', () => this.createGroup());
+    on('group-info-btn', () => this.openGroupInfo());
+    on('leaveGroupBtn', () => this.leaveGroup());
+
+    // notes
+    on('postNoteBtn', () => this.postNote());
+    on('noteInput', e => { if (e.key === 'Enter') this.postNote(); }, 'keydown');
+
+    // chat window
+    on('back-btn', () => this.backToChatList());
+    on('send-btn', () => this.sendMessage());
+    on('message-input', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); } }, 'keydown');
+    on('message-input', () => this.onTyping(), 'input');
+    on('attach-btn', () => $id('image-input').click());
+    on('image-input', e => { const f = e.target.files[0]; e.target.value = ''; if (f) this.sendImage(f); }, 'change');
+    on('cancel-edit-btn', () => this.cancelEdit());
+    on('video-call-btn', () => {
+      const c = this.currentChat;
+      if (c && c.type === 'direct') callManager.startCall(c.uid);
+    });
+    on('image-viewer', () => $id('image-viewer').classList.add('hidden'));
+
+    // message actions
+    const row = $id('emoji-row');
+    REACTION_EMOJIS.forEach(em => {
+      const b = el('button', null, em);
+      b.onclick = () => { $('#actionsModal').modal('hide'); this.toggleReaction(this.actionMid, em); };
+      row.appendChild(b);
+    });
+    on('act-copy', () => {
+      const m = this.msgData[this.actionMid];
+      if (m && m.text && navigator.clipboard) navigator.clipboard.writeText(m.text).then(() => this.toast('Copied'));
+      $('#actionsModal').modal('hide');
+    });
+    on('act-edit', () => { $('#actionsModal').modal('hide'); this.startEdit(this.actionMid); });
+    on('act-delete', () => { $('#actionsModal').modal('hide'); this.deleteMessage(this.actionMid); });
+
+    // calls
+    callManager.bindUI();
+  },
+
+  /* ---------- auth ---------- */
+  showLoader(v) { $id('loader').style.display = v ? 'flex' : 'none'; },
+
+  async login() {
+    const email = $id('login-email').value.trim();
+    const password = $id('login-password').value;
+    if (!email || !password) return this.toast('Enter both email and password.');
+    this.showLoader(true);
+    try { await this.auth.signInWithEmailAndPassword(email, password); }
+    catch (e) { this.toast(e.message); this.showLoader(false); }
+  },
+
+  async signUp() {
+    const name = $id('signup-name').value.trim();
+    const email = $id('signup-email').value.trim();
+    const psw = $id('signup-password').value;
+    if (!name || !email || !psw) return this.toast('Please fill in all fields.');
+    this.signingUp = true;
+    this.showLoader(true);
+    try {
+      const cred = await this.auth.createUserWithEmailAndPassword(email, psw);
+      try { await cred.user.updateProfile({ displayName: name }); } catch (e) {}
+      await this.db.ref(`users/${cred.user.uid}`).set({ name, nameLower: name.toLowerCase() });
+    } catch (e) {
+      this.toast(e.message);
+    }
+    this.signingUp = false;
+    if (this.auth.currentUser) await this.onAuth(this.auth.currentUser);
+    else this.showLoader(false);
+  },
+
+  async logout() {
+    try { await this.db.ref(`presence/${this.me.uid}`).set({ online: false, lastSeen: TS() }); } catch (e) {}
+    this.auth.signOut();
+  },
+
+  async onAuth(user) {
+    if (this.signingUp) return;
+    this.stopSession();
+    if (!user) {
+      this.me = null;
+      this.showLoader(false);
+      this.navigateTo('auth-container');
+      return;
+    }
+    this.me = user;
+    this.showLoader(true);
+    try {
+      await this.startSession();
+      this.navigateTo('main-app-view');
+      this.switchTab('chats');
+    } catch (e) {
+      console.error('Startup error', e);
+      this.toast('Could not load your data: ' + e.message);
+      this.auth.signOut();
+    } finally {
+      this.showLoader(false);
+    }
+  },
+
+  /* ---------- listener bookkeeping ---------- */
+  listen(ref, event, cb, group) {
+    ref.on(event, cb, err => console.warn('Listener error:', event, err && err.message));
+    this.listeners.push({ ref, event, cb, group: group || 'session' });
+  },
+  clearListeners(group) {
+    this.listeners = this.listeners.filter(l => {
+      if (group && l.group !== group) return true;
+      l.ref.off(l.event, l.cb);
+      return false;
+    });
+  },
+
+  /* ---------- session ---------- */
+  async startSession() {
+    const uid = this.me.uid;
+
+    const usersRef = this.db.ref('users');
+    const onUser = s => { this.allUsers[s.key] = s.val(); this.onUsersChanged(s.key); };
+    this.listen(usersRef, 'child_added', onUser);
+    this.listen(usersRef, 'child_changed', onUser);
+    this.listen(usersRef, 'child_removed', s => { delete this.allUsers[s.key]; this.onUsersChanged(s.key); });
+    await usersRef.once('value');
+
+    this.listen(this.db.ref(`friends/${uid}`), 'value', s => { this.friends = s.val() || {}; this.scheduleRender(); });
+    this.listen(this.db.ref(`userGroups/${uid}`), 'value', s => this.syncGroups(s.val() || {}));
+    this.listen(this.db.ref(`userChats/${uid}`), 'value', s => this.onChatMeta(s.val() || {}));
+    this.listen(this.db.ref(`friendRequests/${uid}`), 'value', s => this.onRequests(s.val() || {}));
+    this.listen(this.db.ref(`incomingCalls/${uid}`), 'value', s => callManager.onIncoming(s));
+
+    const presRef = this.db.ref('presence');
+    const onPres = s => { this.presence[s.key] = s.val(); this.scheduleRender(); this.updateChatHeader(); };
+    this.listen(presRef, 'child_added', onPres);
+    this.listen(presRef, 'child_changed', onPres);
+
+    this.listen(this.db.ref('.info/connected'), 'value', s => {
+      if (s.val() !== true) return;
+      const pr = this.db.ref(`presence/${uid}`);
+      pr.onDisconnect().set({ online: false, lastSeen: TS() }).then(() => pr.set({ online: true, lastSeen: TS() }));
+    });
+
+    this.renderAll();
+  },
+
+  stopSession() {
+    callManager.reset();
+    this.stopTyping();
+    this.clearListeners();
+    Object.values(this.groupRefs).forEach(g => g.ref.off('value', g.cb));
+    this.groupRefs = {};
+    this.allUsers = {}; this.presence = {}; this.friends = {}; this.groups = {}; this.userGroups = {};
+    this.chatMeta = {}; this.requests = {}; this.sentRequests = new Set();
+    this.metaLoaded = false; this.requestsLoaded = false;
+    this.currentChat = null;
+    this.editingMid = null;
+    ['chat-list', 'requests-list', 'people-results', 'friends-list', 'chat-messages'].forEach(id => { $id(id).textContent = ''; });
+    $('.modal').modal('hide');
+  },
+
+  onUsersChanged(uid) {
+    if (this.me && uid === this.me.uid) this.renderProfileBits();
+    this.scheduleRender();
+    const c = this.currentChat;
+    if (c && c.type === 'direct' && c.uid === uid) this.updateChatHeader();
+  },
+
+  myName() {
+    const u = this.me && this.allUsers[this.me.uid];
+    return (u && u.name) || (this.me && this.me.displayName) || 'Someone';
+  },
+
+  /* ---------- navigation ---------- */
+  navigateTo(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    $id(viewId).classList.add('active');
+  },
+
+  switchTab(tab) {
+    this.activeTab = tab;
+    ['chats', 'people', 'menu'].forEach(t => {
+      $id('panel-' + t).classList.toggle('active', t === tab);
+      $id('nav-' + t).classList.toggle('active', t === tab);
+    });
+    $id('main-title').textContent = { chats: 'Chats', people: 'People', menu: 'Menu' }[tab];
+    $id('header-actions').classList.toggle('hidden', tab !== 'chats');
+    this.renderAll();
+  },
+
+  /* ---------- rendering ---------- */
+  scheduleRender() {
+    if (this.renderQueued) return;
+    this.renderQueued = true;
+    requestAnimationFrame(() => { this.renderQueued = false; this.renderAll(); });
+  },
+
+  renderAll() {
+    if (!this.me) return;
+    this.renderProfileBits();
+    this.renderChatList();
+    this.renderPeople();
+  },
+
+  directId(otherUid) { return [this.me.uid, otherUid].sort().join('_'); },
+
+  renderProfileBits() {
+    const u = this.allUsers[this.me.uid] || {};
+    const name = u.name || this.me.displayName || '?';
+    setAvatar($id('header-avatar'), name, u.profileImageUrl);
+    const card = $id('profile-card');
+    card.textContent = '';
+    card.appendChild(makeAvatar(name, u.profileImageUrl));
+    const t = el('div');
+    t.appendChild(el('strong', null, name));
+    t.appendChild(el('br'));
+    t.appendChild(el('small', null, 'Tap to edit profile'));
+    card.appendChild(t);
+  },
+
+  renderChatList() {
+    const listEl = $id('chat-list');
+    const term = $id('chat-search').value.trim().toLowerCase();
+    const items = [];
+
+    Object.keys(this.friends).forEach(fid => {
+      const u = this.allUsers[fid]; if (!u) return;
+      const id = this.directId(fid);
+      items.push({ id, type: 'direct', uid: fid, name: u.name, img: u.profileImageUrl, meta: this.chatMeta[id] || {} });
+    });
+    Object.keys(this.userGroups).forEach(gid => {
+      const g = this.groups[gid]; if (!g) return;
+      items.push({ id: gid, type: 'group', name: g.name, meta: this.chatMeta[gid] || {} });
+    });
+
+    const shown = items
+      .filter(i => !term || i.name.toLowerCase().includes(term))
+      .sort((a, b) => (b.meta.timestamp || 0) - (a.meta.timestamp || 0));
+
+    let totalUnread = 0;
+    items.forEach(i => { totalUnread += i.meta.unread || 0; });
+    const badge = $id('chats-badge');
+    badge.textContent = totalUnread > 99 ? '99+' : totalUnread;
+    badge.classList.toggle('hidden', !totalUnread);
+    document.title = (totalUnread ? `(${totalUnread}) ` : '') + 'Gaze - The Finest Version';
+
+    listEl.textContent = '';
+    if (!shown.length) {
+      listEl.appendChild(el('div', 'empty', items.length ? 'No chats match your search.' : 'No chats yet. Open the People tab to add friends, or create a group.'));
+      return;
+    }
+
+    shown.forEach(i => {
+      const m = i.meta;
+      const row = el('div', 'list-item' + (m.unread ? ' unread' : ''));
+      const av = i.type === 'group' ? groupAvatar() : makeAvatar(i.name, i.img);
+      if (i.type === 'direct' && this.presence[i.uid] && this.presence[i.uid].online) av.appendChild(el('span', 'online-dot'));
+      row.appendChild(av);
+
+      const info = el('div', 'chat-info');
+      const top = el('div', 'row-top');
+      top.appendChild(el('strong', null, i.name));
+      top.appendChild(el('span', 'time', fmtListTime(m.timestamp)));
+      const bottom = el('div', 'row-bottom');
+      let preview;
+      if (!m.text) preview = i.type === 'group' ? 'Start chatting' : `Say hi to ${i.name}`;
+      else if (m.senderId === this.me.uid) preview = 'You: ' + m.text;
+      else if (i.type === 'group') preview = ((this.allUsers[m.senderId] || {}).name || 'Someone').split(' ')[0] + ': ' + m.text;
+      else preview = m.text;
+      bottom.appendChild(el('span', 'preview', preview));
+      if (m.unread) bottom.appendChild(el('span', 'badge', m.unread > 99 ? '99+' : m.unread));
+      info.appendChild(top); info.appendChild(bottom);
+      row.appendChild(info);
+      row.onclick = () => this.openChat(i);
+      listEl.appendChild(row);
+    });
+  },
+
+  renderPeople() {
+    if (!this.me) return;
+    const uid = this.me.uid;
+
+    // requests
+    const reqIds = Object.keys(this.requests).filter(id => this.allUsers[id]);
+    $id('requests-section').classList.toggle('hidden', !reqIds.length);
+    const reqEl = $id('requests-list');
+    reqEl.textContent = '';
+    reqIds.forEach(id => {
+      const u = this.allUsers[id];
+      const row = el('div', 'person-row');
+      row.appendChild(makeAvatar(u.name, u.profileImageUrl));
+      row.appendChild(el('span', 'name', u.name));
+      const ok = el('button', 'btn btn-inline', 'Accept'); ok.onclick = () => this.acceptRequest(id);
+      const no = el('button', 'btn btn-inline btn-ghost', 'Decline'); no.onclick = () => this.declineRequest(id);
+      row.appendChild(ok); row.appendChild(no);
+      reqEl.appendChild(row);
+    });
+    const pb = $id('people-badge');
+    pb.textContent = reqIds.length;
+    pb.classList.toggle('hidden', !reqIds.length);
+
+    // search / suggestions
+    const term = $id('people-search').value.trim().toLowerCase();
+    const resEl = $id('people-results');
+    resEl.textContent = '';
+    const matches = Object.keys(this.allUsers)
+      .filter(id => id !== uid && !this.friends[id] && !this.requests[id] && (!term || (this.allUsers[id].name || '').toLowerCase().includes(term)))
+      .slice(0, 30);
+    if (!matches.length) resEl.appendChild(el('div', 'empty', term ? 'Nobody found.' : 'No one else to add right now.'));
+    matches.forEach(id => {
+      const u = this.allUsers[id];
+      const row = el('div', 'person-row');
+      row.appendChild(makeAvatar(u.name, u.profileImageUrl));
+      row.appendChild(el('span', 'name', u.name));
+      const btn = el('button', 'btn btn-inline', this.sentRequests.has(id) ? 'Requested' : 'Add');
+      btn.disabled = this.sentRequests.has(id);
+      btn.onclick = () => this.sendRequest(id);
+      row.appendChild(btn);
+      resEl.appendChild(row);
+    });
+
+    // friends
+    const frEl = $id('friends-list');
+    frEl.textContent = '';
+    const friendIds = Object.keys(this.friends).filter(id => this.allUsers[id]);
+    if (!friendIds.length) frEl.appendChild(el('div', 'empty', 'No friends yet.'));
+    friendIds.forEach(id => {
+      const u = this.allUsers[id];
+      const row = el('div', 'person-row clickable');
+      row.appendChild(makeAvatar(u.name, u.profileImageUrl));
+      row.appendChild(el('span', 'name', u.name));
+      row.onclick = () => this.openChat({ id: this.directId(id), type: 'direct', uid: id, name: u.name, img: u.profileImageUrl });
+      frEl.appendChild(row);
+    });
+  },
+
+  /* ---------- friend requests ---------- */
+  async sendRequest(toUid) {
+    if (this.requests[toUid]) return this.acceptRequest(toUid);
+    try {
+      await this.db.ref(`friendRequests/${toUid}/${this.me.uid}`).set({ timestamp: TS() });
+      this.sentRequests.add(toUid);
+      this.toast('Friend request sent');
+      this.renderPeople();
+    } catch (e) { this.toast('Could not send request: ' + e.message); }
+  },
+
+  async acceptRequest(fromUid) {
+    const me = this.me.uid;
+    try {
+      await this.db.ref(`friends/${me}/${fromUid}`).set(true);
+      await this.db.ref(`friends/${fromUid}/${me}`).set(true);
+      await this.db.ref(`friendRequests/${me}/${fromUid}`).remove();
+      this.db.ref(`friendRequests/${fromUid}/${me}`).remove().catch(() => {});
+      this.toast('You are now friends');
+    } catch (e) { this.toast('Could not accept: ' + e.message); }
+  },
+
+  declineRequest(fromUid) {
+    this.db.ref(`friendRequests/${this.me.uid}/${fromUid}`).remove().catch(e => this.toast(e.message));
+  },
+
+  onRequests(map) {
+    if (this.requestsLoaded) {
+      Object.keys(map).forEach(id => {
+        if (!this.requests[id]) {
+          const n = (this.allUsers[id] || {}).name || 'Someone';
+          this.toast(`${n} sent you a friend request`);
+          this.systemNotify('Friend request', `${n} wants to be your friend`, 'req-' + id);
+        }
+      });
+    }
+    this.requests = map;
+    this.requestsLoaded = true;
+    this.scheduleRender();
+  },
+
+  /* ---------- groups ---------- */
+  syncGroups(map) {
+    this.userGroups = map;
+    Object.keys(map).forEach(gid => {
+      if (this.groupRefs[gid]) return;
+      const ref = this.db.ref(`groups/${gid}`);
+      const cb = s => {
+        if (s.exists()) this.groups[gid] = s.val(); else delete this.groups[gid];
+        this.scheduleRender();
+        const c = this.currentChat;
+        if (c && c.id === gid) this.updateChatHeader();
+      };
+      ref.on('value', cb, () => {});
+      this.groupRefs[gid] = { ref, cb };
+    });
+    Object.keys(this.groupRefs).forEach(gid => {
+      if (map[gid]) return;
+      this.groupRefs[gid].ref.off('value', this.groupRefs[gid].cb);
+      delete this.groupRefs[gid];
+      delete this.groups[gid];
+      if (this.currentChat && this.currentChat.id === gid) { this.backToChatList(); this.toast('You left the group'); }
+    });
+    this.scheduleRender();
+  },
+
+  showCreateGroup() {
+    $id('groupNameInput').value = '';
+    const box = $id('groupFriendsList');
+    box.textContent = '';
+    const ids = Object.keys(this.friends).filter(id => this.allUsers[id]);
+    if (!ids.length) box.appendChild(el('div', 'empty', 'Add some friends first.'));
+    ids.forEach(id => {
+      const lab = el('label', 'person-row');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.value = id; cb.className = 'friend-checkbox';
+      lab.appendChild(cb);
+      lab.appendChild(makeAvatar(this.allUsers[id].name, this.allUsers[id].profileImageUrl, 'small'));
+      lab.appendChild(el('span', 'name', this.allUsers[id].name));
+      box.appendChild(lab);
+    });
+    $('#createGroupModal').modal('show');
+  },
+
+  async createGroup() {
+    const name = $id('groupNameInput').value.trim();
+    const ids = Array.from(document.querySelectorAll('.friend-checkbox:checked')).map(c => c.value);
+    if (!name) return this.toast('Please enter a group name.');
+    if (!ids.length) return this.toast('Pick at least one friend.');
+    const me = this.me.uid;
+    const gid = this.db.ref('groups').push().key;
+    const members = { [me]: true };
+    ids.forEach(i => { members[i] = true; });
+    try {
+      await this.db.ref(`groups/${gid}`).set({ name, createdBy: me, createdAt: TS(), members });
+      await this.db.ref(`chats/${gid}/participants`).set(members);
+      await Promise.all(Object.keys(members).map(u => this.db.ref(`userGroups/${u}/${gid}`).set(true)));
+      await this.db.ref(`userChats/${me}/${gid}`).update({ text: 'Group created', senderId: me, timestamp: TS(), unread: 0 });
+      $('#createGroupModal').modal('hide');
+      this.toast('Group created');
+    } catch (e) { this.toast('Could not create group: ' + e.message); }
+  },
+
+  openGroupInfo() {
+    const c = this.currentChat;
+    const g = c && this.groups[c.id];
+    if (!g) return;
+    $id('groupInfoTitle').textContent = g.name;
+    const box = $id('groupInfoMembers');
+    box.textContent = '';
+    Object.keys(g.members || {}).forEach(id => {
+      const u = this.allUsers[id] || { name: 'Unknown' };
+      const row = el('div', 'person-row');
+      row.appendChild(makeAvatar(u.name, u.profileImageUrl));
+      row.appendChild(el('span', 'name', u.name + (id === this.me.uid ? ' (you)' : '') + (id === g.createdBy ? ' · admin' : '')));
+      box.appendChild(row);
+    });
+    $('#groupInfoModal').modal('show');
+  },
+
+  async leaveGroup() {
+    const c = this.currentChat; if (!c || c.type !== 'group') return;
+    if (!confirm('Leave this group?')) return;
+    const me = this.me.uid, gid = c.id;
+    try {
+      await this.db.ref(`groups/${gid}/members/${me}`).remove();
+      await this.db.ref(`chats/${gid}/participants/${me}`).remove();
+      await this.db.ref(`userChats/${me}/${gid}`).remove();
+      await this.db.ref(`userGroups/${me}/${gid}`).remove();
+      $('#groupInfoModal').modal('hide');
+    } catch (e) { this.toast('Could not leave: ' + e.message); }
+  },
+
+  /* ---------- unread / notifications ---------- */
+  onChatMeta(meta) {
+    if (this.metaLoaded) {
+      Object.keys(meta).forEach(id => {
+        const prev = (this.chatMeta[id] && this.chatMeta[id].unread) || 0;
+        const m = meta[id];
+        if ((m.unread || 0) > prev && m.senderId !== this.me.uid) this.notifyMessage(id, m);
+      });
+    }
+    this.chatMeta = meta;
+    this.metaLoaded = true;
+    const c = this.currentChat;
+    if (c && (meta[c.id] || {}).unread > 0 && document.visibilityState === 'visible') this.markRead();
+    this.scheduleRender();
+  },
+
+  notifyMessage(chatId, m) {
+    const viewing = this.currentChat && this.currentChat.id === chatId && document.visibilityState === 'visible';
+    if (viewing) return;
+    const sender = (this.allUsers[m.senderId] || {}).name || 'Someone';
+    const group = this.groups[chatId];
+    const title = group ? `${group.name}` : sender;
+    const body = group ? `${sender}: ${m.text}` : m.text;
+    if (document.visibilityState === 'visible') this.toast(`${title}: ${m.text}`);
+    this.systemNotify(title, body, 'chat-' + chatId);
+  },
+
+  systemNotify(title, body, tag) {
+    if (document.visibilityState === 'visible') return;
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    try { new Notification(title, { body, tag }); } catch (e) {}
+  },
+
+  enableNotifications() {
+    if (!('Notification' in window)) return this.toast('This browser does not support notifications.');
+    Notification.requestPermission().then(() => this.updateNotifyLabel());
+  },
+  updateNotifyLabel() {
+    const s = $id('notify-state');
+    if (!('Notification' in window)) s.textContent = 'Unsupported';
+    else s.textContent = { granted: 'On', denied: 'Blocked', default: 'Off' }[Notification.permission];
+  },
+
+  markRead() {
+    const c = this.currentChat; if (!c || !this.me) return;
+    if (((this.chatMeta[c.id] || {}).unread || 0) > 0) this.db.ref(`userChats/${this.me.uid}/${c.id}/unread`).set(0).catch(() => {});
+    this.db.ref(`chats/${c.id}/seen/${this.me.uid}`).set(TS()).catch(() => {});
+  },
+
+  /* ---------- chat ---------- */
+  openChat(item) {
+    this.currentChat = { id: item.id, type: item.type, uid: item.uid, name: item.name };
+    $id('chat-title').textContent = item.name;
+    const av = $id('chat-avatar');
+    if (item.type === 'group') { av.style.backgroundImage = ''; av.innerHTML = '<i class="fas fa-users" style="font-size:0.55em"></i>'; }
+    else setAvatar(av, item.name, item.img);
+    $id('video-call-btn').classList.toggle('hidden', item.type !== 'direct');
+    $id('group-info-btn').classList.toggle('hidden', item.type !== 'group');
+    $id('message-input').value = '';
+    this.cancelEdit();
+    this.navigateTo('chat-window');
+    this.updateChatHeader();
+    this.loadMessages();
+    this.markRead();
+  },
+
+  updateChatHeader() {
+    const c = this.currentChat; if (!c) return;
+    const sub = $id('chat-subtitle');
+    sub.classList.remove('online');
+    if (c.type === 'direct') {
+      const u = this.allUsers[c.uid];
+      if (u) { $id('chat-title').textContent = u.name; setAvatar($id('chat-avatar'), u.name, u.profileImageUrl); }
+      const p = this.presence[c.uid];
+      if (p && p.online) { sub.textContent = 'Online'; sub.classList.add('online'); }
+      else sub.textContent = p ? fmtLastSeen(p.lastSeen) : '';
+    } else {
+      const g = this.groups[c.id];
+      if (g) { $id('chat-title').textContent = g.name; sub.textContent = Object.keys(g.members || {}).length + ' members'; }
+    }
+  },
+
+  loadMessages() {
+    this.clearListeners('chat');
+    const c = this.currentChat, id = c.id;
+    const box = $id('chat-messages');
+    box.textContent = '';
+    this.msgEls = {}; this.msgData = {}; this.reactions = {}; this.seenTs = 0; this.lastDay = null; this.initialLoaded = false;
+    $id('typing-indicator').textContent = '';
+    const still = () => this.currentChat && this.currentChat.id === id;
+
+    const q = this.db.ref(`chats/${id}/messages`).orderByKey().limitToLast(100);
+    this.listen(q, 'child_added', s => { if (still()) this.upsertMessage(s.key, s.val(), true); }, 'chat');
+    this.listen(q, 'child_changed', s => { if (still()) this.upsertMessage(s.key, s.val(), false); }, 'chat');
+    q.once('value').then(() => {
+      if (!still()) return;
+      this.initialLoaded = true;
+      box.scrollTop = box.scrollHeight;
+    }).catch(e => this.toast('Could not load messages: ' + e.message));
+
+    this.listen(this.db.ref(`chats/${id}/reactions`), 'value', s => {
+      if (!still()) return;
+      this.reactions = s.val() || {};
+      Object.keys(this.msgEls).forEach(mid => this.renderReactions(mid));
+    }, 'chat');
+
+    this.listen(this.db.ref(`chats/${id}/typing`), 'value', s => {
+      if (!still()) return;
+      const t = s.val() || {};
+      const names = Object.keys(t).filter(u => u !== this.me.uid && t[u]).map(u => ((this.allUsers[u] || {}).name || 'Someone').split(' ')[0]);
+      $id('typing-indicator').textContent = !names.length ? '' : (names.length === 1 ? `${names[0]} is typing…` : `${names.join(', ')} are typing…`);
+    }, 'chat');
+
+    if (c.type === 'direct') {
+      this.listen(this.db.ref(`chats/${id}/seen/${c.uid}`), 'value', s => {
+        if (!still()) return;
+        this.seenTs = s.val() || 0;
+        this.updateReceipts();
+      }, 'chat');
+    }
+  },
+
+  upsertMessage(mid, m, isNew) {
+    const box = $id('chat-messages');
+    const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
+    const mine = m.senderId === this.me.uid;
+    const c = this.currentChat;
+    const ts = m.timestamp || Date.now();
+
+    let wrap = this.msgEls[mid];
+    if (!wrap) {
+      const dk = new Date(ts).toDateString();
+      if (dk !== this.lastDay) { box.appendChild(el('div', 'day-sep', fmtDay(ts))); this.lastDay = dk; }
+      wrap = el('div', 'message ' + (mine ? 'sent' : 'received'));
+      this.msgEls[mid] = wrap;
+      box.appendChild(wrap);
+    }
+    this.msgData[mid] = m;
+    wrap.textContent = '';
+    wrap.dataset.ts = ts;
+
+    const bubble = el('div', 'bubble');
+    if (m.deleted) {
+      bubble.classList.add('deleted');
+      bubble.textContent = 'Message deleted';
+    } else {
+      if (!mine && c.type === 'group') bubble.appendChild(el('div', 'sender', (this.allUsers[m.senderId] || {}).name || 'Unknown'));
+      if (isImg(m.image)) {
+        const img = el('img', 'msg-image');
+        img.src = m.image; img.alt = 'Photo';
+        img.onclick = e => { e.stopPropagation(); $id('image-viewer-img').src = m.image; $id('image-viewer').classList.remove('hidden'); };
+        bubble.appendChild(img);
+      }
+      if (m.text) bubble.appendChild(el('div', 'msg-text', m.text));
+      if (m.edited) bubble.appendChild(el('span', 'edited', 'edited'));
+      bubble.onclick = () => this.openMessageActions(mid);
+    }
+    wrap.appendChild(bubble);
+    wrap.appendChild(el('div', 'reactions'));
+    const meta = el('div', 'meta');
+    meta.appendChild(el('span', 'time', fmtTime(ts)));
+    if (mine && c.type === 'direct') meta.appendChild(el('span', 'receipt'));
+    wrap.appendChild(meta);
+
+    this.renderReactions(mid);
+    this.updateReceipts();
+
+    if (isNew) {
+      if (mine || nearBottom || !this.initialLoaded) box.scrollTop = box.scrollHeight;
+      if (!mine && this.initialLoaded && document.visibilityState === 'visible') this.markRead();
+    }
+  },
+
+  renderReactions(mid) {
+    const wrap = this.msgEls[mid]; if (!wrap) return;
+    const box = wrap.querySelector('.reactions'); if (!box) return;
+    box.textContent = '';
+    const r = this.reactions[mid]; if (!r) return;
+    const counts = {};
+    Object.keys(r).forEach(u => { counts[r[u]] = (counts[r[u]] || 0) + 1; });
+    Object.keys(counts).forEach(em => {
+      const chip = el('span', 'chip' + (r[this.me.uid] === em ? ' mine' : ''), counts[em] > 1 ? `${em} ${counts[em]}` : em);
+      chip.onclick = () => this.toggleReaction(mid, em);
+      box.appendChild(chip);
+    });
+  },
+
+  toggleReaction(mid, emoji) {
+    const c = this.currentChat; if (!c || !mid) return;
+    const ref = this.db.ref(`chats/${c.id}/reactions/${mid}/${this.me.uid}`);
+    const mineNow = (this.reactions[mid] || {})[this.me.uid];
+    (mineNow === emoji ? ref.remove() : ref.set(emoji)).catch(e => this.toast(e.message));
+  },
+
+  updateReceipts() {
+    const c = this.currentChat;
+    if (!c || c.type !== 'direct') return;
+    const sent = document.querySelectorAll('#chat-messages .message.sent');
+    sent.forEach(w => { const r = w.querySelector('.receipt'); if (r) r.textContent = ''; });
+    for (let i = sent.length - 1; i >= 0; i--) {
+      const w = sent[i];
+      const r = w.querySelector('.receipt');
+      if (!r) continue;
+      r.textContent = this.seenTs && this.seenTs >= Number(w.dataset.ts) ? '✓ Seen' : '✓ Sent';
+      break;
+    }
+  },
+
+  /* ---------- message actions ---------- */
+  openMessageActions(mid) {
+    const m = this.msgData[mid]; if (!m || m.deleted) return;
+    this.actionMid = mid;
+    const mine = m.senderId === this.me.uid;
+    $id('act-copy').classList.toggle('hidden', !m.text);
+    $id('act-edit').classList.toggle('hidden', !(mine && m.text));
+    $id('act-delete').classList.toggle('hidden', !mine);
+    $('#actionsModal').modal('show');
+  },
+
+  startEdit(mid) {
+    const m = this.msgData[mid]; if (!m) return;
+    this.editingMid = mid;
+    $id('edit-bar').classList.remove('hidden');
+    const input = $id('message-input');
+    input.value = m.text || '';
+    input.focus();
+  },
+  cancelEdit() {
+    if (this.editingMid) $id('message-input').value = '';
+    this.editingMid = null;
+    $id('edit-bar').classList.add('hidden');
+  },
+
+  deleteMessage(mid) {
+    const c = this.currentChat; if (!c || !mid) return;
+    if (!confirm('Delete this message for everyone?')) return;
+    this.db.ref(`chats/${c.id}/messages/${mid}`).update({ deleted: true, text: null, image: null })
+      .catch(e => this.toast('Could not delete: ' + e.message));
+  },
+
+  /* ---------- sending ---------- */
+  async sendMessage(image) {
+    const c = this.currentChat; if (!c) return;
+    const input = $id('message-input');
+    const text = input.value.trim();
+
+    if (this.editingMid) {
+      if (!text) return;
+      const mid = this.editingMid;
+      this.cancelEdit();
+      this.db.ref(`chats/${c.id}/messages/${mid}`).update({ text, edited: true }).catch(e => this.toast('Could not edit: ' + e.message));
+      return;
+    }
+    if (!text && !image) return;
+
+    input.value = '';
+    this.stopTyping();
+
+    const data = { senderId: this.me.uid, timestamp: TS() };
+    if (text) data.text = text;
+    if (image) data.image = image;
+    this.db.ref(`chats/${c.id}/messages`).push().set(data).catch(e => this.toast('Message failed: ' + e.message));
+
+    const preview = text ? text.slice(0, 80) : '📷 Photo';
+    this.updateInbox(c, preview);
+  },
+
+  updateInbox(c, preview) {
+    const me = this.me.uid;
+    const base = { text: preview, senderId: me, timestamp: TS() };
+    const recipients = c.type === 'direct'
+      ? [c.uid]
+      : Object.keys((this.groups[c.id] || {}).members || {}).filter(u => u !== me);
+    this.db.ref(`userChats/${me}/${c.id}`).update({ ...base, unread: 0 }).catch(() => {});
+    recipients.forEach(r => {
+      const ref = this.db.ref(`userChats/${r}/${c.id}`);
+      ref.update(base).catch(() => {});
+      ref.child('unread').transaction(n => (n || 0) + 1);
+    });
+  },
+
+  async sendImage(file) {
+    try {
+      this.toast('Sending photo…');
+      const data = await resizeChatImage(file);
+      await this.sendMessage(data);
+    } catch (e) { this.toast(e.message); }
+  },
+
+  onTyping() {
+    const c = this.currentChat; if (!c || this.editingMid) return;
+    if (!this.typingOn) {
+      this.typingOn = true;
+      this.typingRef = this.db.ref(`chats/${c.id}/typing/${this.me.uid}`);
+      this.typingRef.set(true).catch(() => {});
+      this.typingRef.onDisconnect().remove();
+    }
+    clearTimeout(this.typingTimer);
+    this.typingTimer = setTimeout(() => this.stopTyping(), 2500);
+  },
+  stopTyping() {
+    clearTimeout(this.typingTimer);
+    if (this.typingOn && this.typingRef) this.typingRef.remove().catch(() => {});
+    this.typingOn = false;
+    this.typingRef = null;
+  },
+
+  backToChatList() {
+    this.stopTyping();
+    this.clearListeners('chat');
+    this.currentChat = null;
+    this.cancelEdit();
+    this.navigateTo('main-app-view');
+    this.scheduleRender();
+  },
+
+  /* ---------- profile ---------- */
+  openProfile() {
+    const u = this.allUsers[this.me.uid] || {};
+    this.pendingAvatar = null;
+    $id('profileImageInput').value = '';
+    $id('profileNameInput').value = u.name || '';
+    setAvatar($id('profile-preview'), u.name || '?', u.profileImageUrl);
+    $('#profileModal').modal('show');
+  },
+
+  async saveProfile() {
+    const name = $id('profileNameInput').value.trim();
+    if (!name) return this.toast('Name cannot be empty.');
+    const upd = { name, nameLower: name.toLowerCase() };
+    if (this.pendingAvatar) upd.profileImageUrl = this.pendingAvatar;
+    try {
+      await this.db.ref(`users/${this.me.uid}`).update(upd);
+      try { await this.me.updateProfile({ displayName: name }); } catch (e) {}
+      $('#profileModal').modal('hide');
+      this.toast('Profile updated');
+    } catch (e) { this.toast('Could not save: ' + e.message); }
+  },
+
+  /* ---------- notes ---------- */
+  async openNotes() {
+    $id('noteInput').value = '';
+    $('#notesModal').modal('show');
+    await this.loadNotes();
+  },
+
+  async loadNotes() {
+    const list = $id('notesList');
+    list.textContent = '';
+    try {
+      const now = Date.now();
+      const snap = await this.db.ref('public_notes').orderByChild('expiresAt').startAt(now).once('value');
+      const notes = [];
+      snap.forEach(s => { notes.push({ id: s.key, ...s.val() }); });
+      notes.sort((a, b) => b.timestamp - a.timestamp);
+      if (!notes.length) list.appendChild(el('div', 'empty', 'No active notes.'));
+      notes.forEach(n => {
+        const row = el('div', 'note-row');
+        const u = this.allUsers[n.userId] || { name: 'Unknown' };
+        row.appendChild(makeAvatar(u.name, u.profileImageUrl, 'small'));
+        const body = el('div', 'note-body');
+        body.appendChild(el('strong', null, u.name));
+        body.appendChild(el('div', null, n.text));
+        body.appendChild(el('small', null, fmtListTime(n.timestamp)));
+        row.appendChild(body);
+        if (n.userId === this.me.uid) {
+          const del = el('button', 'btn btn-inline btn-danger');
+          del.innerHTML = '<i class="fas fa-trash"></i>';
+          del.onclick = async () => { await this.db.ref(`public_notes/${n.id}`).remove(); this.loadNotes(); };
+          row.appendChild(del);
+        }
+        list.appendChild(row);
+      });
+      // tidy up my own expired notes
+      const old = await this.db.ref('public_notes').orderByChild('expiresAt').endAt(now).once('value');
+      old.forEach(s => { if (s.val().userId === this.me.uid) s.ref.remove().catch(() => {}); });
+    } catch (e) { list.appendChild(el('div', 'empty', 'Could not load notes: ' + e.message)); }
+  },
+
+  async postNote() {
+    const text = $id('noteInput').value.trim();
+    if (!text) return;
+    const now = Date.now();
+    try {
+      await this.db.ref('public_notes').push({ text, userId: this.me.uid, timestamp: now, expiresAt: now + 24 * 3600 * 1000 });
+      $id('noteInput').value = '';
+      await this.loadNotes();
+    } catch (e) { this.toast('Could not post: ' + e.message); }
+  },
+
+  /* ---------- misc UI ---------- */
+  applyTheme(dark) {
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    try { localStorage.setItem('gaze-theme', dark ? 'dark' : 'light'); } catch (e) {}
+    $id('dark-state').textContent = dark ? 'On' : 'Off';
+  },
+
+  toast(msg) {
+    const t = $id('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+};
+
+/* =====================================================================
+   VIDEO CALLS (WebRTC, signalling through Realtime Database)
+
+   calls/{callId}          : caller, callee, status, offer, answer,
+                             callerCandidates/*, calleeCandidates/*
+   incomingCalls/{calleeUid}: pointer that makes the callee's phone ring
+   ===================================================================== */
+const callManager = {
+  active: null,      // the call in progress (caller or callee)
+  incoming: null,    // a ringing call waiting for accept/decline
+  facing: 'user',
+  ringTimer: null, audioCtx: null, timerInt: null,
+
+  bindUI() {
+    $id('incoming-accept').onclick = () => this.accept();
+    $id('incoming-decline').onclick = () => this.decline();
+    $id('call-end').onclick = () => this.hangup();
+    $id('call-mic').onclick = () => this.toggleTrack('audio', 'call-mic', 'fa-microphone', 'fa-microphone-slash');
+    $id('call-cam').onclick = () => this.toggleTrack('video', 'call-cam', 'fa-video', 'fa-video-slash');
+    $id('call-flip').onclick = () => this.flipCamera();
+    $id('localVideo').muted = true;
+  },
+
+  /* ---------- media ---------- */
+  async getMedia() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('Calls need HTTPS. Open the app from your Firebase Hosting link.');
+    }
+    try {
+      return await navigator.mediaDevices.getUserMedia({ video: { facingMode: this.facing }, audio: true });
+    } catch (e) {
+      try {
+        const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+        app.toast('Camera unavailable, joining with audio only');
+        return s;
+      } catch (e2) {
+        throw new Error('Allow microphone and camera access to make calls.');
+      }
+    }
+  },
+
+  stopStream(s) { if (s) s.getTracks().forEach(t => t.stop()); },
+
+  /* ---------- UI ---------- */
+  showCallScreen(name, status) {
+    $id('call-peer-name').textContent = name;
+    this.setStatus(status);
+    const call = this.active;
+    const hasVideo = call && call.local.getVideoTracks().length > 0;
+    $id('localVideo').srcObject = call ? call.local : null;
+    $id('localVideo').classList.toggle('hidden', !hasVideo);
+    $id('localVideo').classList.remove('rear');
+    $id('call-cam').classList.toggle('hidden', !hasVideo);
+    $id('call-flip').classList.add('hidden');
+    $id('call-mic').className = 'call-btn';
+    $id('call-mic').innerHTML = '<i class="fas fa-microphone"></i>';
+    $id('call-cam').className = 'call-btn' + (hasVideo ? '' : ' hidden');
+    $id('call-cam').innerHTML = '<i class="fas fa-video"></i>';
+    $id('call-screen').classList.remove('hidden');
+    if (hasVideo && navigator.mediaDevices.enumerateDevices) {
+      navigator.mediaDevices.enumerateDevices().then(d => {
+        if (d.filter(x => x.kind === 'videoinput').length > 1) $id('call-flip').classList.remove('hidden');
+      }).catch(() => {});
+    }
+  },
+  setStatus(t) { $id('call-status').textContent = t; },
+  hideCallScreen() {
+    $id('call-screen').classList.add('hidden');
+    $id('localVideo').srcObject = null;
+    $id('remoteVideo').srcObject = null;
+  },
+  startTimer() {
+    clearInterval(this.timerInt);
+    const t0 = Date.now();
+    this.timerInt = setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      this.setStatus(String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'));
+    }, 1000);
+  },
+
+  toggleTrack(kind, btnId, onIcon, offIcon) {
+    const call = this.active; if (!call) return;
+    const tracks = kind === 'audio' ? call.local.getAudioTracks() : call.local.getVideoTracks();
+    if (!tracks.length) return;
+    const enable = !tracks[0].enabled;
+    tracks.forEach(t => { t.enabled = enable; });
+    const b = $id(btnId);
+    b.classList.toggle('off', !enable);
+    b.innerHTML = `<i class="fas ${enable ? onIcon : offIcon}"></i>`;
+  },
+
+  async flipCamera() {
+    const call = this.active; if (!call) return;
+    const sender = call.pc.getSenders().find(s => s.track && s.track.kind === 'video');
+    if (!sender) return;
+    const next = this.facing === 'user' ? 'environment' : 'user';
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: next } });
+      const track = s.getVideoTracks()[0];
+      await sender.replaceTrack(track);
+      call.local.getVideoTracks().forEach(t => { t.stop(); call.local.removeTrack(t); });
+      call.local.addTrack(track);
+      this.facing = next;
+      $id('localVideo').srcObject = call.local;
+      $id('localVideo').classList.toggle('rear', next === 'environment');
+    } catch (e) { app.toast('Could not switch camera'); }
+  },
+
+  /* ---------- ringing ---------- */
+  startRing() {
+    this.stopRing();
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!this.audioCtx) this.audioCtx = new Ctx();
+      const ctx = this.audioCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      const beep = () => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.value = 480; g.gain.value = 0.08;
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.5);
+        if (navigator.vibrate) navigator.vibrate([300, 150, 300]);
+      };
+      beep();
+      this.ringTimer = setInterval(beep, 2000);
+    } catch (e) {}
+  },
+  stopRing() { clearInterval(this.ringTimer); this.ringTimer = null; if (navigator.vibrate) navigator.vibrate(0); },
+
+  /* ---------- peer connection ---------- */
+  createPeer(call, myCandidatePath) {
+    const pc = call.pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+    call.remote = new MediaStream();
+    $id('remoteVideo').srcObject = call.remote;
+    call.local.getTracks().forEach(t => pc.addTrack(t, call.local));
+
+    pc.ontrack = e => {
+      call.remote.addTrack(e.track);
+      $id('remoteVideo').play().catch(() => {});
+    };
+    pc.onicecandidate = e => {
+      if (e.candidate) this.sendCandidate(call, myCandidatePath, e.candidate.toJSON());
+    };
+    pc.oniceconnectionstatechange = () => {
+      if (this.active !== call) return;
+      const s = pc.iceConnectionState;
+      if (s === 'connected' || s === 'completed') {
+        clearTimeout(call.dropTimer);
+        if (!call.connected) { call.connected = true; clearTimeout(call.ringTimeout); this.startTimer(); }
+      } else if (s === 'disconnected') {
+        this.setStatus('Reconnecting…');
+        clearTimeout(call.dropTimer);
+        call.dropTimer = setTimeout(() => this.finish(call, 'Connection lost', true), 10000);
+      } else if (s === 'failed') {
+        this.finish(call, 'Connection failed. Add a TURN server in ICE_SERVERS if this keeps happening.', true);
+      }
+    };
+    return pc;
+  },
+
+  sendCandidate(call, path, cand) {
+    if (!call.ready) { call.candBuffer.push([path, cand]); return; }
+    call.ref.child(path).push(cand).catch(() => {});
+  },
+  flushCandidates(call) {
+    call.ready = true;
+    call.candBuffer.forEach(([p, c]) => call.ref.child(p).push(c).catch(() => {}));
+    call.candBuffer = [];
+  },
+  addRemoteCandidate(call, cand) {
+    if (call.pc.remoteDescription) call.pc.addIceCandidate(new RTCIceCandidate(cand)).catch(() => {});
+    else call.pending.push(cand);
+  },
+  flushPending(call) {
+    call.pending.forEach(c => call.pc.addIceCandidate(new RTCIceCandidate(c)).catch(() => {}));
+    call.pending = [];
+  },
+
+  /* ---------- caller ---------- */
+  async startCall(peerUid) {
+    if (this.active || this.incoming) return app.toast('You are already in a call.');
+    const peer = app.allUsers[peerUid]; if (!peer) return;
+    const p = app.presence[peerUid];
+    if (!p || !p.online) app.toast(`${peer.name} looks offline. The call only rings if they open the app.`);
+
+    let local;
+    try { local = await this.getMedia(); } catch (e) { return app.toast(e.message); }
+
+    const me = app.me.uid;
+    const callRef = app.db.ref('calls').push();
+    const call = this.active = {
+      id: callRef.key, role: 'caller', peerUid, ref: callRef, local,
+      pending: [], candBuffer: [], ready: false, connected: false, answerSet: false, listeners: []
+    };
+    this.showCallScreen(peer.name, 'Calling…');
+    this.createPeer(call, 'callerCandidates');
+
+    try {
+      const offer = await call.pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true });
+      await call.pc.setLocalDescription(offer);
+      await callRef.set({
+        caller: me, callee: peerUid, callerName: app.myName(), status: 'ringing',
+        offer: { type: offer.type, sdp: offer.sdp }, createdAt: TS()
+      });
+      this.flushCandidates(call);
+      callRef.onDisconnect().remove();
+      const incRef = call.incRef = app.db.ref(`incomingCalls/${peerUid}`);
+      await incRef.set({ callId: call.id, from: me, fromName: app.myName(), timestamp: TS() });
+      incRef.onDisconnect().remove();
+    } catch (e) {
+      console.error(e);
+      return this.finish(call, 'Could not start the call: ' + e.message, false);
+    }
+
+    const onVal = snap => this.onCallValue(call, snap);
+    callRef.on('value', onVal);
+    call.listeners.push([callRef, 'value', onVal]);
+    const candRef = callRef.child('calleeCandidates');
+    const onCand = s => this.addRemoteCandidate(call, s.val());
+    candRef.on('child_added', onCand);
+    call.listeners.push([candRef, 'child_added', onCand]);
+
+    call.ringTimeout = setTimeout(() => {
+      if (this.active === call && !call.connected) this.finish(call, 'No answer', true);
+    }, 45000);
+  },
+
+  async onCallValue(call, snap) {
+    if (this.active !== call) return;
+    const v = snap.val();
+    if (!v) return this.finish(call, 'Call ended', false);
+    if (call.role === 'caller') {
+      if (v.answer && !call.answerSet) {
+        call.answerSet = true;
+        try {
+          await call.pc.setRemoteDescription(new RTCSessionDescription(v.answer));
+          this.flushPending(call);
+        } catch (e) { return this.finish(call, 'Could not connect', true); }
+      }
+      if (v.status === 'accepted') {
+        this.setStatus(call.connected ? $id('call-status').textContent : 'Connecting…');
+        if (call.incRef) { call.incRef.remove().catch(() => {}); call.incRef.onDisconnect().cancel(); }
+      }
+    }
+    if (v.status === 'declined') return this.finish(call, call.role === 'caller' ? `${(app.allUsers[call.peerUid] || {}).name || 'They'} declined` : 'Call ended', false);
+    if (v.status === 'ended') return this.finish(call, 'Call ended', false);
+  },
+
+  /* ---------- callee ---------- */
+  onIncoming(snap) {
+    const v = snap.val();
+    if (!v) {
+      if (this.incoming && !this.incoming.accepted) this.dismissIncoming('Missed call');
+      return;
+    }
+    if (this.incoming && this.incoming.callId === v.callId) return;
+    if (Date.now() - (v.timestamp || 0) > 90000) { snap.ref.remove().catch(() => {}); return; }
+    if (this.active || this.incoming) {
+      app.db.ref(`calls/${v.callId}/status`).set('declined').catch(() => {});
+      snap.ref.remove().catch(() => {});
+      return;
+    }
+    this.incoming = { ...v, accepted: false };
+    const u = app.allUsers[v.from] || { name: v.fromName || 'Someone' };
+    $id('incoming-name').textContent = u.name;
+    setAvatar($id('incoming-avatar'), u.name, u.profileImageUrl);
+    $id('incoming-call').classList.remove('hidden');
+    this.startRing();
+    app.systemNotify('Incoming video call', `${u.name} is calling you`, 'call');
+
+    // watch for the caller cancelling
+    const ref = app.db.ref(`calls/${v.callId}`);
+    const cb = s => { if (!s.exists() && this.incoming && this.incoming.callId === v.callId && !this.incoming.accepted) this.dismissIncoming('Missed call'); };
+    ref.on('value', cb, () => {});
+    this.incoming.unwatch = () => ref.off('value', cb);
+  },
+
+  dismissIncoming(msg) {
+    this.stopRing();
+    if (this.incoming && this.incoming.unwatch) this.incoming.unwatch();
+    this.incoming = null;
+    $id('incoming-call').classList.add('hidden');
+    if (msg) app.toast(msg);
+  },
+
+  decline() {
+    const inc = this.incoming; if (!inc) return;
+    app.db.ref(`calls/${inc.callId}/status`).set('declined').catch(() => {});
+    app.db.ref(`incomingCalls/${app.me.uid}`).remove().catch(() => {});
+    this.dismissIncoming();
+  },
+
+  async accept() {
+    const inc = this.incoming; if (!inc) return;
+    inc.accepted = true;
+    this.stopRing();
+    if (inc.unwatch) inc.unwatch();
+    $id('incoming-call').classList.add('hidden');
+
+    let local;
+    try { local = await this.getMedia(); }
+    catch (e) { app.toast(e.message); this.incoming = null; app.db.ref(`calls/${inc.callId}/status`).set('declined').catch(() => {}); app.db.ref(`incomingCalls/${app.me.uid}`).remove().catch(() => {}); return; }
+
+    const callRef = app.db.ref(`calls/${inc.callId}`);
+    let v;
+    try { v = (await callRef.once('value')).val(); } catch (e) { v = null; }
+    if (!v || !v.offer || v.status !== 'ringing') {
+      this.stopStream(local);
+      this.incoming = null;
+      app.db.ref(`incomingCalls/${app.me.uid}`).remove().catch(() => {});
+      return app.toast('That call is no longer available.');
+    }
+
+    const call = this.active = {
+      id: inc.callId, role: 'callee', peerUid: inc.from, ref: callRef, local,
+      pending: [], candBuffer: [], ready: true, connected: false, answerSet: true, listeners: []
+    };
+    this.incoming = null;
+    const name = (app.allUsers[inc.from] || {}).name || inc.fromName || 'Call';
+    this.showCallScreen(name, 'Connecting…');
+    this.createPeer(call, 'calleeCandidates');
+
+    try {
+      await call.pc.setRemoteDescription(new RTCSessionDescription(v.offer));
+      const answer = await call.pc.createAnswer();
+      await call.pc.setLocalDescription(answer);
+      await callRef.update({ answer: { type: answer.type, sdp: answer.sdp }, status: 'accepted' });
+      callRef.child('status').onDisconnect().set('ended');
+      app.db.ref(`incomingCalls/${app.me.uid}`).remove().catch(() => {});
+    } catch (e) {
+      console.error(e);
+      return this.finish(call, 'Could not connect: ' + e.message, true);
+    }
+
+    const onVal = s => this.onCallValue(call, s);
+    callRef.on('value', onVal);
+    call.listeners.push([callRef, 'value', onVal]);
+    const candRef = callRef.child('callerCandidates');
+    const onCand = s => this.addRemoteCandidate(call, s.val());
+    candRef.on('child_added', onCand);
+    call.listeners.push([candRef, 'child_added', onCand]);
+    this.flushPending(call);
+  },
+
+  /* ---------- ending ---------- */
+  hangup() {
+    if (this.active) this.finish(this.active, 'Call ended', true);
+  },
+
+  finish(call, message, notifyRemote) {
+    if (this.active !== call) return;
+    this.active = null;
+    clearTimeout(call.ringTimeout);
+    clearTimeout(call.dropTimer);
+    clearInterval(this.timerInt);
+    call.listeners.forEach(([ref, evt, cb]) => ref.off(evt, cb));
+
+    try {
+      if (call.role === 'caller') {
+        call.ref.onDisconnect().cancel();
+        call.ref.remove().catch(() => {});
+        if (call.incRef) { call.incRef.onDisconnect().cancel(); call.incRef.remove().catch(() => {}); }
+      } else {
+        call.ref.child('status').onDisconnect().cancel();
+        if (notifyRemote) call.ref.child('status').set('ended').catch(() => {});
+      }
+    } catch (e) {}
+
+    try { call.pc.close(); } catch (e) {}
+    this.stopStream(call.local);
+    this.hideCallScreen();
+    if (message) app.toast(message);
+  },
+
+  /* called on logout / session change */
+  reset() {
+    if (this.active) this.finish(this.active, null, true);
+    if (this.incoming) this.dismissIncoming();
+  }
+};
+
+app.init();
+</script>
+</body>
+</html>
