@@ -4,21 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Web Programming – Weekly Tasks</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="Browse and run the weekly tasks and exercises for the Web Programming course, grouped by week.">
+<meta name="theme-color" content="#1f5eff">
+<link rel="canonical" href="https://syushantu-ops.github.io/Web/">
+<!-- tiny inline favicon so the browser doesn't go looking for /favicon.ico and 404 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5eff'/%3E%3Cpath d='M9 10l4 12 3-8 3 8 4-12' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
   :root {
+    color-scheme: light dark;
     --bg: #f3f5f7;
     --panel: #ffffff;
     --ink: #1c2530;
-    --muted: #66727f;
+    --muted: #566370;
     --line: #dde2e8;
     --accent: #1f5eff;
+    --on-accent: #ffffff;
     --accent-soft: #e6edff;
     --hover: #eef1f4;
-    --head: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-    --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    --font: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
     --side: 320px;
   }
   @media (prefers-color-scheme: dark) {
@@ -26,9 +29,10 @@
       --bg: #12171d;
       --panel: #1a2129;
       --ink: #e7ecf1;
-      --muted: #8d99a6;
+      --muted: #94a0ad;
       --line: #2b3541;
       --accent: #6f98ff;
+      --on-accent: #0b1220;   /* white text on this blue was too faint */
       --accent-soft: #22304f;
       --hover: #222b35;
     }
@@ -36,7 +40,7 @@
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body {
-    font-family: var(--body);
+    font-family: var(--font);
     background: var(--bg);
     color: var(--ink);
     display: grid;
@@ -44,17 +48,18 @@
     font-size: 15px;
   }
 
-  /* ---------- sidebar ---------- */
+  /* sidebar */
   aside {
     background: var(--panel);
     border-right: 1px solid var(--line);
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100dvh;
     min-height: 0;
   }
   .brand { padding: 20px 20px 14px; border-bottom: 1px solid var(--line); }
-  .brand h1 { font: 700 22px/1.15 var(--head); margin: 0 0 4px; letter-spacing: -0.01em; }
+  .brand h1 { font-size: 22px; line-height: 1.15; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
   .brand p { margin: 0; color: var(--muted); font-size: 13px; }
   .search { padding: 12px 16px; border-bottom: 1px solid var(--line); }
   .search input {
@@ -62,15 +67,15 @@
     border: 1px solid var(--line); border-radius: 8px;
     background: var(--bg); color: var(--ink);
   }
-  .search input:focus-visible, button:focus-visible, a:focus-visible {
+  .search input:focus-visible, button:focus-visible, a:focus-visible, .card:focus-visible {
     outline: 2px solid var(--accent); outline-offset: 2px;
   }
   nav { overflow-y: auto; flex: 1; padding: 8px 8px 24px; }
   .week { margin-bottom: 2px; }
   .week-head {
     display: flex; align-items: center; width: 100%;
-    gap: 8px; padding: 9px 10px; border: 0; background: none;
-    font: 600 14px var(--body); color: var(--ink);
+    gap: 8px; padding: 10px; border: 0; background: none;
+    font: 600 14px var(--font); color: var(--ink);
     border-radius: 8px; cursor: pointer; text-align: left;
   }
   .week-head:hover { background: var(--hover); }
@@ -85,36 +90,37 @@
   .week.open .tasks { display: block; }
   .task {
     display: block; width: 100%; text-align: left; border: 0; background: none;
-    padding: 7px 10px; border-radius: 6px; cursor: pointer;
-    font: 400 14px var(--body); color: var(--ink);
+    padding: 9px 10px; border-radius: 6px; cursor: pointer;
+    font: 400 14px var(--font); color: var(--ink);
   }
   .task:hover { background: var(--hover); }
-  .task.active { background: var(--accent); color: #fff; }
+  .task.active { background: var(--accent); color: var(--on-accent); }
   .status { padding: 16px; color: var(--muted); font-size: 14px; line-height: 1.5; }
   .status code { background: var(--bg); padding: 1px 5px; border-radius: 4px; }
 
-  /* ---------- main ---------- */
-  main { display: flex; flex-direction: column; height: 100vh; min-width: 0; min-height: 0; }
+  /* main area */
+  main { display: flex; flex-direction: column; height: 100vh; height: 100dvh; min-width: 0; min-height: 0; }
   .bar {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
-    min-height: 56px;
+    min-height: 60px;
   }
-  .bar .title { font: 700 17px var(--head); margin-right: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .bar .title small { font: 400 13px var(--body); color: var(--muted); margin-left: 8px; }
+  .bar .title { font-size: 17px; font-weight: 700; margin-right: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar .title small { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 8px; }
   .btn {
-    font: 500 13px var(--body); padding: 7px 12px; border-radius: 8px;
+    font: 500 13px var(--font); padding: 0 14px; min-height: 40px; border-radius: 8px;
     border: 1px solid var(--line); background: var(--panel); color: var(--ink);
     cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
   }
   .btn:hover { background: var(--hover); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .btn.primary:hover { filter: brightness(1.08); }
   #menuBtn { display: none; }
+  [hidden] { display: none !important; }
   .stage { flex: 1; min-height: 0; position: relative; overflow: auto; }
   iframe#runner { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
 
-  /* week overview grid */
+  /* week overview */
   .grid {
     display: grid; gap: 18px; padding: 20px;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -135,17 +141,19 @@
   .card-body span { color: var(--muted); font-size: 12px; }
 
   .welcome { max-width: 640px; margin: 12vh auto; padding: 0 24px; }
-  .welcome h2 { font: 700 30px/1.15 var(--head); margin: 0 0 10px; letter-spacing: -0.01em; }
-  .welcome p { color: var(--muted); line-height: 1.6; margin: 0 0 10px; }
+  .welcome h2 { font-size: 30px; line-height: 1.15; font-weight: 700; margin: 0 0 10px; letter-spacing: -0.01em; }
+  .welcome p { color: var(--muted); line-height: 1.6; margin: 0 0 10px; min-height: 3.2em; }
 
-  /* ---------- mobile ---------- */
+  /* phones / narrow windows */
   @media (max-width: 800px) {
     body { grid-template-columns: 1fr; }
     aside {
       position: fixed; inset: 0 25% 0 0; z-index: 10; max-width: 340px;
-      transform: translateX(-102%); transition: transform .2s;
+      transform: translateX(-102%);
+      visibility: hidden;   /* keeps keyboard focus out of the closed drawer */
+      transition: transform .2s, visibility 0s .2s;
     }
-    body.menu aside { transform: none; box-shadow: 0 0 0 100vmax rgba(0,0,0,.4); }
+    body.menu aside { transform: none; visibility: visible; transition-delay: 0s; box-shadow: 0 0 0 100vmax rgba(0,0,0,.4); }
     #menuBtn { display: inline-flex; }
   }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -159,33 +167,33 @@
     <p id="subtitle">Weekly tasks</p>
   </div>
   <div class="search"><input id="q" type="search" placeholder="Filter weeks and tasks" aria-label="Filter weeks and tasks"></div>
-  <nav id="nav"><div class="status">Loading tasks from GitHub…</div></nav>
+  <nav id="nav" aria-label="Weeks and tasks"><div class="status">Loading tasks from GitHub…</div></nav>
 </aside>
 
 <main>
   <div class="bar">
-    <button class="btn" id="menuBtn" type="button">Weeks</button>
+    <button class="btn" id="menuBtn" type="button" aria-controls="side" aria-expanded="false">Weeks</button>
     <div class="title" id="title">All tasks</div>
     <button class="btn" id="reload" type="button" hidden>Reload</button>
-    <a class="btn primary" id="newtab" href="#" target="_blank" rel="noopener" hidden>Open in new tab</a>
+    <a class="btn primary" id="newtab" href="./" target="_blank" rel="noopener" hidden>Open in new tab</a>
   </div>
-  <div class="stage" id="stage"></div>
+  <!-- the welcome text is in the HTML on purpose, so it shows up before the GitHub request finishes -->
+  <div class="stage" id="stage">
+    <div class="welcome">
+      <h2>Pick a week to get started</h2>
+      <p id="intro">Loading your tasks…</p>
+    </div>
+  </div>
 </main>
 
 <script>
-/* ============================================================
-   SETTINGS
-   On GitHub Pages (https://USER.github.io/REPO/) the owner and
-   repo are detected automatically. Edit these only if you host
-   the page somewhere else.
-   ============================================================ */
+// If the site isn't on github.io, these two are used instead of auto-detecting.
 const FALLBACK_OWNER = "syushantu-ops";
 const FALLBACK_REPO  = "Web";
 
-/* Files that should not appear in the list */
-const IGNORE = new Set(["index.html"]);
+// files we never want in the list
+const SKIP = new Set(["index.html"]);
 
-/* ---------- repo detection ---------- */
 function detectRepo() {
   const host = location.hostname;
   if (host.endsWith(".github.io")) {
@@ -197,7 +205,6 @@ function detectRepo() {
 }
 const { owner: OWNER, repo: REPO } = detectRepo();
 
-/* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
 const natural = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
@@ -212,7 +219,7 @@ function compareWeeks(a, b) {
 }
 function prettyWeek(folder) {
   const m = folder.match(/^week\s*(\d+)(?:[_\-\s]*(\d+))?$/i);
-  if (m) return `Week ${m[1]}` + (m[2] ? ` · part ${m[2]}` : "");
+  if (m) return "Week " + m[1] + (m[2] ? " · part " + m[2] : "");
   return folder.replace(/[_\-]+/g, " ");
 }
 function prettyTask(file) {
@@ -222,31 +229,28 @@ function urlFor(path) {
   return path.split("/").map(encodeURIComponent).join("/");
 }
 
-/* ---------- state ---------- */
-let weeks = [];          // [{folder, label, tasks:[{path,name}]}]
-let current = null;      // {type:'task'|'week', ...}
+let weeks = [];      // [{folder, label, tasks: [{path, name}]}]
+let current = null;  // what's open right now (a task or a week)
 
-/* ---------- load file list from GitHub ---------- */
-async function gh(url) {
-  const r = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+/* ---- getting the file list ---- */
+
+async function loadTree() {
+  const cacheKey = "tree:" + OWNER + "/" + REPO;
+  try {
+    const c = JSON.parse(sessionStorage.getItem(cacheKey) || "null");
+    if (c && Date.now() - c.t < 5 * 60 * 1000) return c.paths;
+  } catch (e) { /* storage blocked, no big deal */ }
+
+  // HEAD = default branch, so we only need one request. No custom headers either,
+  // which means the browser skips the CORS preflight.
+  const r = await fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + "/git/trees/HEAD?recursive=1");
   if (!r.ok) {
     const err = new Error("GitHub API " + r.status);
     err.status = r.status;
     throw err;
   }
-  return r.json();
-}
-
-async function loadTree() {
-  const cacheKey = `tree:${OWNER}/${REPO}`;
-  try {
-    const c = JSON.parse(sessionStorage.getItem(cacheKey) || "null");
-    if (c && Date.now() - c.t < 5 * 60 * 1000) return c.paths;
-  } catch (e) { /* storage unavailable */ }
-
-  const repoInfo = await gh(`https://api.github.com/repos/${OWNER}/${REPO}`);
-  const tree = await gh(`https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${repoInfo.default_branch}?recursive=1`);
-  const paths = tree.tree.filter(n => n.type === "blob").map(n => n.path);
+  const data = await r.json();
+  const paths = data.tree.filter(n => n.type === "blob").map(n => n.path);
   try { sessionStorage.setItem(cacheKey, JSON.stringify({ t: Date.now(), paths })); } catch (e) {}
   return paths;
 }
@@ -257,7 +261,7 @@ function buildWeeks(paths) {
     if (!/\.html?$/i.test(p)) continue;
     const parts = p.split("/");
     const file = parts[parts.length - 1];
-    if (parts.length === 1 && IGNORE.has(file.toLowerCase())) continue;
+    if (parts.length === 1 && SKIP.has(file.toLowerCase())) continue;
     if (parts[0].startsWith(".")) continue;
     const folder = parts.length === 1 ? "(root)" : parts[0];
     if (!map.has(folder)) map.set(folder, []);
@@ -265,11 +269,7 @@ function buildWeeks(paths) {
   }
   const out = [...map.entries()].map(([folder, tasks]) => {
     tasks.sort((a, b) => natural.compare(a.name, b.name));
-    return {
-      folder,
-      label: folder === "(root)" ? "Other pages" : prettyWeek(folder),
-      tasks
-    };
+    return { folder, label: folder === "(root)" ? "Other pages" : prettyWeek(folder), tasks };
   });
   out.sort((a, b) => {
     if (a.folder === "(root)") return 1;
@@ -279,7 +279,8 @@ function buildWeeks(paths) {
   return out;
 }
 
-/* ---------- sidebar ---------- */
+/* ---- sidebar ---- */
+
 function renderNav(filter = "") {
   const nav = $("nav");
   nav.textContent = "";
@@ -287,25 +288,29 @@ function renderNav(filter = "") {
   let shown = 0;
 
   for (const w of weeks) {
-    const matchWeek = f && (w.label.toLowerCase().includes(f) || w.folder.toLowerCase().includes(f));
-    const tasks = f && !matchWeek ? w.tasks.filter(t => t.name.toLowerCase().includes(f)) : w.tasks;
+    const weekMatches = f && (w.label.toLowerCase().includes(f) || w.folder.toLowerCase().includes(f));
+    const tasks = f && !weekMatches ? w.tasks.filter(t => t.name.toLowerCase().includes(f)) : w.tasks;
     if (!tasks.length) continue;
     shown++;
 
     const wrap = document.createElement("div");
     wrap.className = "week";
-    const isCurrentWeek = current && current.folder === w.folder;
-    if (f || isCurrentWeek) wrap.classList.add("open");
+    const isOpenWeek = current && current.folder === w.folder;
+    if (f || isOpenWeek) wrap.classList.add("open");
 
+    const isActiveWeek = current && current.type === "week" && current.folder === w.folder;
     const head = document.createElement("button");
     head.type = "button";
-    head.className = "week-head" + (current && current.type === "week" && current.folder === w.folder ? " active" : "");
-    head.innerHTML = `<svg class="chev" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span></span><span class="count"></span>`;
+    head.className = "week-head" + (isActiveWeek ? " active" : "");
+    head.setAttribute("aria-expanded", wrap.classList.contains("open"));
+    if (isActiveWeek) head.setAttribute("aria-current", "page");
+    head.innerHTML = '<svg class="chev" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span></span><span class="count"></span>';
     head.children[1].textContent = w.label;
     head.children[2].textContent = tasks.length;
     head.title = "Show all tasks in this week";
     head.addEventListener("click", () => {
       wrap.classList.toggle("open");
+      head.setAttribute("aria-expanded", wrap.classList.contains("open"));
       openWeek(w.folder);
     });
     wrap.appendChild(head);
@@ -315,7 +320,9 @@ function renderNav(filter = "") {
     for (const t of tasks) {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "task" + (current && current.path === t.path ? " active" : "");
+      const active = current && current.path === t.path;
+      b.className = "task" + (active ? " active" : "");
+      if (active) b.setAttribute("aria-current", "page");
       b.textContent = t.name;
       b.addEventListener("click", () => openTask(t.path));
       list.appendChild(b);
@@ -323,32 +330,52 @@ function renderNav(filter = "") {
     wrap.appendChild(list);
     nav.appendChild(wrap);
   }
-  if (!shown) nav.innerHTML = `<div class="status">Nothing matches “${f.replace(/[<>&]/g, "")}”.</div>`;
+
+  if (!shown) {
+    const msg = document.createElement("div");
+    msg.className = "status";
+    msg.textContent = "Nothing matches “" + filter.trim() + "”.";
+    nav.appendChild(msg);
+  }
 }
 
-/* ---------- main area ---------- */
+/* ---- main area ---- */
+
 function setBar(title, sub, path) {
-  $("title").innerHTML = "";
-  $("title").append(title);
-  if (sub) { const s = document.createElement("small"); s.textContent = sub; $("title").append(s); }
+  const t = $("title");
+  t.textContent = title;
+  if (sub) {
+    const s = document.createElement("small");
+    s.textContent = sub;
+    t.append(s);
+  }
   const link = $("newtab");
   if (path) { link.href = urlFor(path); link.hidden = false; } else { link.hidden = true; }
   $("reload").hidden = !path;
 }
 
-function closeMenu() { document.body.classList.remove("menu"); }
+function setMenu(open) {
+  document.body.classList.toggle("menu", open);
+  $("menuBtn").setAttribute("aria-expanded", open);
+}
 
 function showWelcome() {
   current = null;
   setBar("All tasks");
   const total = weeks.reduce((n, w) => n + w.tasks.length, 0);
-  $("stage").innerHTML = `
-    <div class="welcome">
-      <h2>Pick a week to get started</h2>
-      <p>${weeks.length} weeks and ${total} tasks are listed on the left. Click a week to see all its tasks side by side, or click a task to run it here.</p>
-      
-    </div>`;
-  location.hash = "";
+
+  const box = document.createElement("div");
+  box.className = "welcome";
+  const h = document.createElement("h2");
+  h.textContent = "Pick a week to get started";
+  const p = document.createElement("p");
+  p.id = "intro";
+  p.textContent = weeks.length + " weeks and " + total + " tasks are listed on the left. Click a week to see all its tasks side by side, or click a task to run it here.";
+  box.append(h, p);
+  $("stage").textContent = "";
+  $("stage").appendChild(box);
+
+  if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   renderNav($("q").value);
 }
 
@@ -356,7 +383,8 @@ function openWeek(folder) {
   const w = weeks.find(x => x.folder === folder);
   if (!w) return showWelcome();
   current = { type: "week", folder };
-  setBar(w.label, `${w.tasks.length} task${w.tasks.length === 1 ? "" : "s"}`);
+  setBar(w.label, w.tasks.length + " task" + (w.tasks.length === 1 ? "" : "s"));
+
   const grid = document.createElement("div");
   grid.className = "grid";
   for (const t of w.tasks) {
@@ -364,29 +392,38 @@ function openWeek(folder) {
     card.className = "card";
     card.tabIndex = 0;
     card.setAttribute("role", "button");
+    card.setAttribute("aria-label", "Run " + t.name);
+
     const thumb = document.createElement("div");
     thumb.className = "thumb";
+    thumb.inert = true;   // the preview shouldn't be clickable or focusable
     const fr = document.createElement("iframe");
     fr.loading = "lazy";
     fr.src = urlFor(t.path);
     fr.title = "Preview of " + t.name;
-    fr.tabIndex = -1;
     thumb.appendChild(fr);
+
     const body = document.createElement("div");
     body.className = "card-body";
-    body.innerHTML = "<strong></strong><span>Run</span>";
-    body.firstChild.textContent = t.name;
+    const name = document.createElement("strong");
+    name.textContent = t.name;
+    const run = document.createElement("span");
+    run.textContent = "Run";
+    body.append(name, run);
+
     card.append(thumb, body);
     const go = () => openTask(t.path);
     card.addEventListener("click", go);
-    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    card.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+    });
     grid.appendChild(card);
   }
   $("stage").textContent = "";
   $("stage").appendChild(grid);
   history.replaceState(null, "", "#" + encodeURIComponent(folder));
   renderNav($("q").value);
-  closeMenu();
+  setMenu(false);
 }
 
 function openTask(path) {
@@ -397,6 +434,7 @@ function openTask(path) {
   if (!t) return showWelcome();
   current = { type: "task", folder, path };
   setBar(t.name, w.label, path);
+
   const fr = document.createElement("iframe");
   fr.id = "runner";
   fr.title = t.name;
@@ -405,7 +443,7 @@ function openTask(path) {
   $("stage").appendChild(fr);
   history.replaceState(null, "", "#" + encodeURIComponent(path));
   renderNav($("q").value);
-  closeMenu();
+  setMenu(false);
 }
 
 function route() {
@@ -416,12 +454,25 @@ function route() {
   showWelcome();
 }
 
-/* ---------- events ---------- */
+/* ---- events ---- */
+
 $("q").addEventListener("input", e => renderNav(e.target.value));
-$("menuBtn").addEventListener("click", () => document.body.classList.toggle("menu"));
+$("menuBtn").addEventListener("click", () => setMenu(!document.body.classList.contains("menu")));
 $("reload").addEventListener("click", () => {
   const fr = $("runner");
   if (fr) fr.src = fr.src;
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && document.body.classList.contains("menu")) {
+    setMenu(false);
+    $("menuBtn").focus();
+  }
+});
+// tapping the dimmed area (anywhere outside the drawer) closes it
+document.addEventListener("click", e => {
+  if (document.body.classList.contains("menu") && !e.target.closest("aside") && e.target.id !== "menuBtn") {
+    setMenu(false);
+  }
 });
 window.addEventListener("hashchange", () => {
   const h = decodeURIComponent(location.hash.slice(1));
@@ -429,25 +480,35 @@ window.addEventListener("hashchange", () => {
   if (h !== now) route();
 });
 
-/* ---------- start ---------- */
+/* ---- go ---- */
+
 (async function init() {
-  $("subtitle").textContent = `${OWNER}/${REPO}`;
+  $("subtitle").textContent = OWNER + "/" + REPO;
   try {
     const paths = await loadTree();
     weeks = buildWeeks(paths);
     if (!weeks.length) {
-      $("nav").innerHTML = `<div class="status">No .html files were found in this repository yet.</div>`;
+      $("nav").innerHTML = '<div class="status">No .html files were found in this repository yet.</div>';
+      $("intro").textContent = "Nothing to show yet.";
       return;
     }
     renderNav();
     route();
   } catch (err) {
     const limited = err.status === 403 || err.status === 429;
-    $("nav").innerHTML = `<div class="status">${
-      limited
-        ? "GitHub is limiting requests from this network right now. Wait a few minutes and reload."
-        : `Could not load the task list (${err.message}). Check that the repository is public and that <code>${OWNER}/${REPO}</code> is correct.`
-    }</div>`;
+    const box = document.createElement("div");
+    box.className = "status";
+    if (limited) {
+      box.textContent = "GitHub is limiting requests from this network right now. Wait a few minutes and reload.";
+    } else {
+      box.append("Could not load the task list (" + err.message + "). Check that the repository is public and that ");
+      const code = document.createElement("code");
+      code.textContent = OWNER + "/" + REPO;
+      box.append(code, " is correct.");
+    }
+    $("nav").textContent = "";
+    $("nav").appendChild(box);
+    $("intro").textContent = "The task list couldn’t be loaded. Try reloading in a moment.";
   }
 })();
 </script>
